@@ -1,2 +1,15 @@
 {
+  "pullRequests": {
+    "tableColumnsConfig": [
+      { "key": "title", "label": "TITLE", "width": 28, "ellipsis": "end" },
+      { "key": "baseRefName", "label": "BASE", "width": 12, "ellipsis": "end" },
+      { "key": "headRefName", "label": "BRANCH", "width": 14, "ellipsis": "end" },
+      { "key": "authorLogin", "label": "AUTHOR", "width": 16, "ellipsis": "end" },
+      { "key": "state", "label": "STATE", "width": 10 },
+      { "key": "createdAt", "label": "CREATED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
+      { "key": "publishedAt", "label": "PUBLISHED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
+      { "key": "updatedAt", "label": "UPDATED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
+      { "key": "mergedAt", "label": "MERGED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" }
+    ]
+  }
 }
