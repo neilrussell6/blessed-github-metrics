@@ -129,34 +129,7 @@ module.exports.init = init
 // --------------------------------------
 
 const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
-  // ... styles
-  const greyTheme = themes[THEME_GREY]
-  const styleBorderBox = buildStyleDarkBorderBox (theme)
 
-  // ... calculations
-  const paddingBottom = 3
-
-  // ... view
-  // ... ... border
-  state.borderView.style.border.fg = R.path (['style', 'border', 'fg'], styleBorderBox)
-  state.borderView.style.label.fg = R.path (['style', 'label', 'fg'], styleBorderBox)
-  state.borderView.height = (state.tableViewHeight) + paddingBottom
-
-  // ... ... table
-  state.tableView.show ()
-  state.tablePlaceholderView.hide ()
-
-  // ... calculations
-  const keys = R.pluck ('key', columnsConfig)
-  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequests)
-
-  state.tableViewTable.update ({ parent: view, rows, columnsConfig })
-
-  // ... view
-  view.height = (state.tableViewHeight) + paddingBottom
-
-  // ... state
-  state.isFocused = isFocused
 }
 
 module.exports.update = update

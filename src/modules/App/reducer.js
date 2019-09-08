@@ -13,10 +13,15 @@ const INITIAL_STATE = {
 // actions
 //---------------------------------
 
-const FOCUS_SECTION = 'app/App/FOCUS_SECTION'
+const FOCUS_SECTION = 'modules/App/FOCUS_SECTION'
+
+const INIT_APP = 'modules/App/INIT_APP'
+const INIT_APP_SUCCESS = 'modules/App/INIT_APP_SUCCESS'
 
 module.exports.actions = {
   FOCUS_SECTION,
+  INIT_APP,
+  INIT_APP_SUCCESS,
 }
 
 //---------------------------------
@@ -25,8 +30,13 @@ module.exports.actions = {
 
 const focusSection = index => ({ type: FOCUS_SECTION, payload: index })
 
+const initApp = () => ({ type: INIT_APP })
+const initAppSuccess = () => ({ type: INIT_APP_SUCCESS })
+
 module.exports.actionCreators = {
   focusSection,
+  initApp,
+  initAppSuccess,
 }
 
 //---------------------------------

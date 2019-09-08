@@ -56,7 +56,7 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
     },
   ))
 
-  return { view, placeholder, data: { height: tableHeight } }
+  return { view, table, placeholder, data: { height: tableHeight } }
 }
 
 // --------------------------------------
@@ -82,6 +82,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
 
   const viewHeight = isFocused ? tableViewHeight : 1
 
+  // you can
   const view = blessed.box ({
     left: 0,
     top: 0,
@@ -120,10 +121,10 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
   state.isFocused = isFocused
 
   // ... events
-  parent.screen.key (['S-left'], (ch, key) => {
-    if (state.isFocused) { onNavigate (0) }
+  parent.screen.key (['up'], (ch, key) => {
+    if (state.isFocused) { onNavigate (-1) }
   })
-  parent.screen.key (['S-right'], (ch, key) => {
+  parent.screen.key (['down'], (ch, key) => {
     if (state.isFocused) { onNavigate (1) }
   })
 
@@ -138,39 +139,7 @@ module.exports.init = init
 // --------------------------------------
 
 const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
-  // ... styles
-  const greyTheme = themes[THEME_GREY]
-  const styleBorderBox = buildStyleDarkBorderBox (isFocused ? theme : greyTheme)
 
-  // ... calculations
-  const paddingBottom = isFocused ? 3 : 2
-
-  // ... view
-  // ... ... border
-  state.borderView.style.border.fg = R.path (['style', 'border', 'fg'], styleBorderBox)
-  state.borderView.style.label.fg = R.path (['style', 'label', 'fg'], styleBorderBox)
-  state.borderView.height = (isFocused ? state.tableViewHeight : 1) + paddingBottom
-
-  // ... ... table
-  if (isFocused) {
-    state.tableView.show ()
-    state.tablePlaceholderView.hide ()
-  } else {
-    state.tableView.hide ()
-    state.tablePlaceholderView.show ()
-  }
-
-  // ... calculations
-  const keys = R.pluck ('key', columnsConfig)
-  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequests)
-
-  state.tableViewTable.update ({ parent: view, rows, columnsConfig })
-
-  // ... view
-  view.height = (isFocused ? state.tableViewHeight : 1) + paddingBottom
-
-  // ... state
-  state.isFocused = isFocused
 }
 
 module.exports.update = update
