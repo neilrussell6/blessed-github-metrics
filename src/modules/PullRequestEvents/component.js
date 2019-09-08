@@ -110,14 +110,6 @@ const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate 
   state.tableViewHeight = tableViewHeight
   state.isFocused = isFocused
 
-  // ... events
-  parent.screen.key (['S-left'], (ch, key) => {
-    if (state.isFocused) { onNavigate (0) }
-  })
-  parent.screen.key (['S-right'], (ch, key) => {
-    if (state.isFocused) { onNavigate (1) }
-  })
-
   // ...
   return { view, data: { height: viewHeight } }
 }

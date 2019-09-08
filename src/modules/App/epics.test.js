@@ -9,27 +9,27 @@ const { initApp, initAppSuccess } = actionCreators
 describe('modules/App/epics', () => {
   let sandbox = null
 
-  beforeEach(async () => {
-    sandbox = await sinon.createSandbox()
+  beforeEach (async () => {
+    sandbox = await sinon.createSandbox ()
   })
 
-  afterEach(async () => {
-    await sandbox.restore()
+  afterEach (async () => {
+    await sandbox.restore ()
   })
 
-  describe('initAppEpic', () => {
-    it('should initialize then succeed', marbles((m) => {
+  describe ('initAppEpic', () => {
+    it ('should initialize then succeed', marbles ((m) => {
       const values = {
-        a: initApp(),
-        b: initAppSuccess(),
+        a: initApp (),
+        b: initAppSuccess (),
       }
-      const state$   = m.cold('-------', values)
-      const action$  = m.cold('---a---', values)
-      const expected =        '---b---'
+      const state$   = m.cold ('-------', values)
+      const action$  = m.cold ('---a---', values)
+      const expected =         '-------------------------------------------------------------------------------------------------------b---'
 
-      const destination$ = SUT.initAppEpic(action$, state$)
+      const destination$ = SUT.initAppEpic (action$, state$)
 
-      m.equal(destination$, expected, values)
+      m.equal (destination$, expected, values)
     }))
   })
 })

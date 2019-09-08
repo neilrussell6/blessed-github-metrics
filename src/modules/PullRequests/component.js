@@ -36,7 +36,7 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
   const view = blessed.box ({
     left: 3,
     top: 2,
-    height: tableHeight,
+    height: tableHeight - 1,
     width: '100%-6',
   })
   view.append (tableView)
@@ -82,7 +82,6 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
 
   const viewHeight = isFocused ? tableViewHeight : 1
 
-  // you can
   const view = blessed.box ({
     left: 0,
     top: 0,
@@ -139,7 +138,20 @@ module.exports.init = init
 // --------------------------------------
 
 const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
+  // ... calculations
+  const paddingBottom = isFocused ? 3 : 2
+  const keys = R.pluck ('key', columnsConfig)
+  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequests)
 
+  // ... view
+  // ... ... table
+  state.tableViewTable.update ({ parent: view, rows, columnsConfig })
+
+  view.height = 20//state.tableViewHeight + paddingBottom
+
+  // ... state
+  state.isFocused = isFocused
+  // state.tableView.render()
 }
 
 module.exports.update = update

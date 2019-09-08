@@ -1,4 +1,4 @@
-const { mapTo } = require ('rxjs/operators')
+const { mapTo, delay } = require ('rxjs/operators')
 const { ofType } = require ('redux-observable')
 
 const { actions, actionCreators } = require ('./reducer')
@@ -11,8 +11,9 @@ const { initAppSuccess } = actionCreators
 //---------------------------------
 
 module.exports.initAppEpic = action$ => (
-  action$.pipe(
-    ofType(INIT_APP),
-    mapTo(initAppSuccess()),
+  action$.pipe (
+    ofType (INIT_APP),
+    delay (100), // TODO: remove this once store is updated to wait for rabbitmq logger to complete
+    mapTo (initAppSuccess ()),
   )
 )

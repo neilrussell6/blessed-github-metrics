@@ -60,7 +60,11 @@ const update = view => ({ parent, rows, columnsConfig, footer }) => {
   // ... ... table
   const data = R.map (R.pipe (
     R.zip (columnsConfig),
-    R.map (([config, column]) => MiscUtils.abbreviateColumnContent (config, column)),
+    R.map (([config, column]) => R.pipe (
+      R.ifElse (R.isNil) (R.always('')) (R.identity),
+      MiscUtils.formatColumnContent (config),
+      MiscUtils.abbreviateColumnContent (config),
+    ) (column)),
   )) (rows)
   view.children[0].setData ({
     headers: R.pluck ('label', columnsConfig),
@@ -77,9 +81,9 @@ const update = view => ({ parent, rows, columnsConfig, footer }) => {
       const { key } = config
       footerViewColumns[i].content = R.propOr ('', key, footer)
     }, columnsConfig)
-
-    parent.render ()
   }
+
+  parent.render ()
 }
 
 // --------------------------------------
@@ -95,7 +99,7 @@ const init = ({ parent, theme, rows, columnsConfig, isFocused, footer }) => {
   const styleTable = buildStyleTable (theme, defaultTheme)
 
   // calculations
-  const tableHeight = R.clamp (1, 14, rows.length + 4)
+  const tableHeight = R.clamp (8, 14, rows.length + 4)
   const columnWidths = R.pluck ('width', columnsConfig)
   const columnTotalWidth = R.sum (columnWidths)
 
