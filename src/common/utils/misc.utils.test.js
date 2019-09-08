@@ -32,6 +32,7 @@ describe ('misc.utils', () => {
   describe ('formatColumnContent', () => {
     describe ('date', () => {
       parametrize ([
+        ['MM/DD', '', ''],
         ['MM/DD', '2019-09-07T09:50:10Z', '09/07'],
         ['MM/DD HH:mm', '2019-09-07T09:50:10Z', '09/07 09:50'],
       ], (formatTemplate, content, expected) => {

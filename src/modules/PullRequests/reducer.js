@@ -35,7 +35,7 @@ const INITIAL_STATE = [
     state: 'MERGED',
     createdAt: '2019-09-05T05:20:50Z',
     publishedAt: '2019-09-05T05:20:50Z',
-    updatedAt: '2019-09-06T11:60:12Z',
+    updatedAt: '2019-09-06T11:50:12Z',
     mergedAt: '2019-09-08T14:15:54Z',
   },
 ]

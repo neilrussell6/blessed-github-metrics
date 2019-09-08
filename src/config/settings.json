@@ -11,5 +11,14 @@
       { "key": "updatedAt", "label": "UPDATED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
       { "key": "mergedAt", "label": "MERGED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" }
     ]
+  },
+  "pullRequestEvents": {
+    "tableColumnsConfig": [
+      { "key": "at", "label": "TIME", "width": 18, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
+      { "key": "eventLabel", "label": "EVENT", "width": 26, "ellipsis": "end" },
+      { "key": "authorOrActor", "label": "AUTHOR/ACTOR", "width": 16, "ellipsis": "end" },
+      { "key": "targetUser", "label": "TARGET USER", "width": 16, "ellipsis": "end" },
+      { "key": "delay", "label": "DELAY", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" }
+    ]
   }
 }

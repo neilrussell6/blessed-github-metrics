@@ -20,18 +20,17 @@ let state = {}
 // helpers
 // --------------------------------------
 
-const buildTable = ({ parent, pullRequests, columnsConfig }) => {
+const buildTable = ({ parent, pullRequestEvents, columnsConfig, isFocused }) => {
   // ... styles
   const greyTheme = themes[THEME_GREY]
   const styleBox = buildStyleBox (greyTheme)
 
   // ... calculations
   const keys = R.pluck ('key', columnsConfig)
-  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequests)
+  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequestEvents)
 
   // ... view
-  // ... ... table
-  const { view: tableView, table, data: tableData } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig })
+  const { view: tableView, data: tableData } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig, isFocused })
   const { height: tableHeight } = tableData
   const view = blessed.box ({
     left: 3,
@@ -41,10 +40,7 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
   })
   view.append (tableView)
 
-  // ... ... ... allow keyboard control
-  table.focus ()
-
-  // ... ... placeholder
+  // ... placeholder
   const placeholder = blessed.box (R.mergeDeepRight (
     styleBox,
     {
@@ -63,13 +59,12 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
 // init
 // --------------------------------------
 
-const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) => {
+const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate }) => {
   // ... styles
-  const greyTheme = themes[THEME_GREY]
-  const styleBorderBox = buildStyleDarkBorderBox (isFocused ? theme : greyTheme)
+  const styleBorderBox = buildStyleDarkBorderBox (theme)
 
   // ... calculations
-  const paddingBottom = isFocused ? 3 : 2
+  const paddingBottom = 3
 
   // ... view
   // ... ... table
@@ -77,10 +72,10 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
     view: tableView,
     placeholder: tablePlaceholderView,
     data: tableViewData,
-  } = buildTable ({ parent, pullRequests, columnsConfig })
+  } = buildTable ({ parent, pullRequestEvents, columnsConfig, isFocused })
   const { height: tableViewHeight } = tableViewData
 
-  const viewHeight = isFocused ? tableViewHeight : 1
+  const viewHeight = tableViewHeight
 
   const view = blessed.box ({
     left: 0,
@@ -97,7 +92,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
       top: 0,
       height: viewHeight + paddingBottom,
       width: '100%',
-      label: ' PULL REQUESTS ',
+      label: ' PULL REQUEST : TIMELINE ',
     },
   ))
   view.append (borderView)
@@ -105,11 +100,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
   // ... ... table
   view.append (tableView)
   view.append (tablePlaceholderView)
-  if (isFocused) {
-    tablePlaceholderView.hide ()
-  } else {
-    tableView.hide ()
-  }
+  tablePlaceholderView.hide ()
 
   // ... state
   state.borderView = borderView
@@ -140,25 +131,20 @@ module.exports.init = init
 const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
   // ... styles
   const greyTheme = themes[THEME_GREY]
-  const styleBorderBox = buildStyleDarkBorderBox (isFocused ? theme : greyTheme)
+  const styleBorderBox = buildStyleDarkBorderBox (theme)
 
   // ... calculations
-  const paddingBottom = isFocused ? 3 : 2
+  const paddingBottom = 3
 
   // ... view
   // ... ... border
   state.borderView.style.border.fg = R.path (['style', 'border', 'fg'], styleBorderBox)
   state.borderView.style.label.fg = R.path (['style', 'label', 'fg'], styleBorderBox)
-  state.borderView.height = (isFocused ? state.tableViewHeight : 1) + paddingBottom
+  state.borderView.height = (state.tableViewHeight) + paddingBottom
 
   // ... ... table
-  if (isFocused) {
-    state.tableView.show ()
-    state.tablePlaceholderView.hide ()
-  } else {
-    state.tableView.hide ()
-    state.tablePlaceholderView.show ()
-  }
+  state.tableView.show ()
+  state.tablePlaceholderView.hide ()
 
   // ... calculations
   const keys = R.pluck ('key', columnsConfig)
@@ -167,7 +153,7 @@ const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
   state.tableViewTable.update ({ parent: view, rows, columnsConfig })
 
   // ... view
-  view.height = (isFocused ? state.tableViewHeight : 1) + paddingBottom
+  view.height = (state.tableViewHeight) + paddingBottom
 
   // ... state
   state.isFocused = isFocused

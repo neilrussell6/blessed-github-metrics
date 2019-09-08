@@ -86,7 +86,7 @@ const update = view => ({ parent, rows, columnsConfig, footer }) => {
 // init
 // --------------------------------------
 
-const init = ({ parent, theme, rows, columnsConfig, footer }) => {
+const init = ({ parent, theme, rows, columnsConfig, isFocused, footer }) => {
   // defaults
   const _footer = R.ifElse (R.isNil, R.always (null), R.identity) (footer)
 
@@ -95,7 +95,7 @@ const init = ({ parent, theme, rows, columnsConfig, footer }) => {
   const styleTable = buildStyleTable (theme, defaultTheme)
 
   // calculations
-  const tableHeight = R.clamp (1, 10, rows.length + 4)
+  const tableHeight = R.clamp (1, 14, rows.length + 4)
   const columnWidths = R.pluck ('width', columnsConfig)
   const columnTotalWidth = R.sum (columnWidths)
 
@@ -106,7 +106,7 @@ const init = ({ parent, theme, rows, columnsConfig, footer }) => {
     styleTable,
     {
       keys: true,
-      interactive: true,
+      interactive: isFocused,
       top: 0,
       left: 0,
       right: 0,
@@ -124,7 +124,7 @@ const init = ({ parent, theme, rows, columnsConfig, footer }) => {
 
   view.append (table)
   view.append (headerLineView)
-  view.append (footerLineView)
+  // view.append (footerLineView)
 
   if (_footer) {
     const { view: footerView } = buildTableFooter (parent, theme, footer, columnsConfig)
@@ -138,12 +138,10 @@ const init = ({ parent, theme, rows, columnsConfig, footer }) => {
     view.append (footerWrapperView)
   }
 
-  // ... allow keyboard control
-  table.focus ()
-
   const data = R.map (R.pipe (
     R.zip (columnsConfig),
     R.map (([config, column]) => R.pipe (
+      R.ifElse (R.isNil) (R.always('')) (R.identity),
       MiscUtils.formatColumnContent (config),
       MiscUtils.abbreviateColumnContent (config),
     ) (column)),
@@ -156,7 +154,7 @@ const init = ({ parent, theme, rows, columnsConfig, footer }) => {
   // ... attach update
   view.update = update (view)
 
-  return { view, data: { height: tableHeight } }
+  return { view, table, data: { height: tableHeight } }
 }
 
 module.exports = init

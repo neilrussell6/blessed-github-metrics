@@ -50,6 +50,13 @@ module.exports.abbreviateColumnContent = config => column => {
 
 module.exports.formatColumnContent = config => column => R.ifElse (
   R.propEq ('format') ('date'),
-  R.compose (x => moment (column).format (x), R.propOr ('YYYY-MM-DD') ('formatTemplate')),
+  R.pipe (
+    R.propOr ('YYYY-MM-DD') ('formatTemplate'),
+    x => R.ifElse
+      (R.isEmpty)
+      (R.identity)
+      (y => moment (y).format (x))
+      (column),
+  ),
   R.always (column),
 ) (config)

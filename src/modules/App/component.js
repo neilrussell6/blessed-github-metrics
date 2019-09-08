@@ -2,6 +2,7 @@ const blessed = require ('blessed')
 
 const Common = require ('../../common/components')
 const { Component: PullRequests } = require ('../PullRequests')
+const { Component: PullRequestEvents } = require ('../PullRequestEvents')
 const { Component: Message } = require ('../Message')
 
 // --------------------------------------
@@ -21,6 +22,7 @@ const init = ({ store, parent, onNavigate }) => {
   view.append (heading)
 
   const { view: pullRequestsView, data: pullRequestsData } = PullRequests (store) (parent)
+  const { view: pullRequestEventsView, data: pullRequestEventsData } = PullRequestEvents (store) (parent)
   const { view: messageView, data: messageViewData } = Message (store) (parent)
 
   // ... view
@@ -32,7 +34,17 @@ const init = ({ store, parent, onNavigate }) => {
     width: '100%-20',
   })
   pullRequestsWrapperView.append (pullRequestsView)
-  view.append ( pullRequestsWrapperView)
+  view.append (pullRequestsWrapperView)
+
+  // ... ... pull request events
+  const pullRequestEventsWrapperView = blessed.box ({
+    left: 'center',
+    top: 4 + pullRequestsData.height + 4,
+    height: pullRequestEventsData.height,
+    width: '100%-20',
+  })
+  pullRequestEventsWrapperView.append (pullRequestEventsView)
+  view.append (pullRequestEventsWrapperView)
 
   // ... ... message
   const messageWrapperView = blessed.box ({
@@ -46,6 +58,7 @@ const init = ({ store, parent, onNavigate }) => {
 
   // ... state
   state.pullRequestsView = pullRequestsView
+  state.pullRequestEventsView = pullRequestEventsView
 
   // ... events
   parent.screen.key (['S-up'], (ch, key) => {
@@ -67,7 +80,7 @@ module.exports.init = init
 
 const update = view => ({ selectedSectionIndex }) => {
   // TODO: make this dynamic
-  state.accountsView.top = selectedSectionIndex === 0 ? 0 : -6
+  state.pullRequestsView.top = selectedSectionIndex === 0 ? 0 : -6
 }
 
 module.exports.update = update
