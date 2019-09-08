@@ -20,7 +20,7 @@
   "dependencies": {
     "amqplib": "^0.5.5",
     "blessed": "^0.1.81",
-    "blessed-contrib": "^4.8.10",
+    "blessed-contrib": "^4.8.16",
     "dotenv-cli": "^1.4.0",
     "moment": "^2.24.0",
     "ramda": "^0.26.1",
