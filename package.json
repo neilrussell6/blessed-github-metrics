@@ -1,0 +1,40 @@
+{
+  "name": "blessed-github-metrics",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "help": "package-json-help.js",
+    "_setup:env": "cp .env.local .env",
+    "_setup:dependencies": "npm i",
+    "setup": "npm-run-all -p _setup:env _setup:dependencies",
+    "start": "dotenv -e .env node src/index.js",
+    "_test:spec": "mocha \"src/**/*.test.js\" --opts mocha.opts",
+    "_test:dot": "npm run _test:spec -- --reporter dot",
+    "test": "npm run _test:spec",
+    "test:watch": "npm run _test:spec -- --watch"
+  },
+  "keywords": [],
+  "author": "Neil Russell <neilrussell6@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.5",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.10",
+    "dotenv-cli": "^1.4.0",
+    "moment": "^2.24.0",
+    "ramda": "^0.26.1",
+    "redux": "^4.0.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "husky": "^1.1.3",
+    "js-parametrize": "0.0.2",
+    "mocha": "^5.2.0",
+    "moment-timezone": "^0.5.26",
+    "npm-run-all": "^4.1.5",
+    "package-json-help": "0.0.9",
+    "reselect": "^4.0.0",
+    "sinon": "^7.1.1"
+  }
+}
