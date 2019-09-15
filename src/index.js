@@ -1,4 +1,5 @@
 const blessed = require ('blessed')
+require('graphql-import-node/register')
 
 const { configureStore } = require ('./common/redux/store.js')
 const Common = require ('./common/components')

@@ -1,7 +1,6 @@
 const { combineReducers, createStore, applyMiddleware } = require ('redux')
 const { createEpicMiddleware } = require ('redux-observable')
 
-const { middleware: rabbitmqLogger } = require ('../redux-middleware/rabbitmq-logger')
 const { reducer: app } = require ('../../modules/App')
 const { reducer: pullRequests, utils: pullRequestsUtils } = require ('../../modules/PullRequests')
 const { reducer: pullRequestEvents } = require ('../../modules/PullRequestEvents')
@@ -18,7 +17,6 @@ const configureStore = () => {
 
   const middleware = [
     epicMiddleware,
-    rabbitmqLogger,
   ]
 
   const reducer = combineReducers ({

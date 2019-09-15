@@ -1,0 +1,19 @@
+query getPullRequests($repoOwner: String!, $repoName: String!, $prCount: Int = 50) {
+  repository(owner: $repoOwner, name: $repoName) {
+    pullRequests(last: $prCount) {
+      nodes {
+        title
+        baseRefName
+        headRefName
+        author {
+          login
+        }
+        state
+        createdAt
+        publishedAt
+        updatedAt
+        mergedAt
+      }
+    }
+  }
+}

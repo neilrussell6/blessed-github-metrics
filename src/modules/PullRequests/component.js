@@ -75,6 +75,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
   // ... ... table
   const {
     view: tableView,
+    table: tableViewTable,
     placeholder: tablePlaceholderView,
     data: tableViewData,
   } = buildTable ({ parent, pullRequests, columnsConfig })
@@ -113,8 +114,8 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
 
   // ... state
   state.borderView = borderView
-  state.tableView = tableView
-  state.tableViewTable = tableView.children[0] // TODO: do this better
+  state.tableView = tableView.children[0]
+  state.tableViewTable = tableViewTable
   state.tablePlaceholderView = tablePlaceholderView
   state.tableViewHeight = tableViewHeight
   state.isFocused = isFocused
@@ -145,13 +146,12 @@ const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
 
   // ... view
   // ... ... table
-  state.tableViewTable.update ({ parent: view, rows, columnsConfig })
+  state.tableView.update ({ parent: view, rows, columnsConfig })
 
-  view.height = 20//state.tableViewHeight + paddingBottom
+  view.height = state.tableViewHeight + paddingBottom
 
   // ... state
   state.isFocused = isFocused
-  // state.tableView.render()
 }
 
 module.exports.update = update

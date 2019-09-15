@@ -1,6 +1,9 @@
 const axios = require('axios')
 const Bluebird = require('bluebird')
 
+const GraphQLUtils = require('../../common/utils/graphql.utils')
+const getPullRequestsQueryDoc = require('./get-pull-requests.gql')
+
 //---------------------------------
 // get pull requests
 //---------------------------------
@@ -9,35 +12,16 @@ const headers = {
   Authorization: `token ${process.env.GITHUB_ACCESS_TOKEN}`,
 }
 
-const variables = {
-  repoOwner: process.env.GITHUB_ORG,
-  repoName: process.env.GITHUB_REPO,
-}
-
-const query = `
-query($repoOwner: String!, $repoName: String!, $prCount: Int = 50) {
-  repository(owner: $repoOwner, name: $repoName) {
-    pullRequests(last: $prCount) {
-      nodes {
-        title
-        baseRefName
-        headRefName
-        author {
-          login
-        }
-        state
-        createdAt
-        publishedAt
-        updatedAt
-        mergedAt
-      }
-    }
+const getPullRequestsBody = {
+  query: GraphQLUtils.docToString (queryDoc),
+  variables: {
+    repoOwner: process.env.GITHUB_ORG,
+    repoName: process.env.GITHUB_REPO,
   }
 }
-`
 
 const getPullRequests = () => Bluebird
-  .resolve (axios.post (process.env.GITHUB_API_URL, { query, variables }, { headers }))
+  .resolve (axios.post (process.env.GITHUB_API_URL, JSON.stringify(getPullRequestsBody), { headers }))
   .then ((response) => {
     if (response.data.errors) {
       return Bluebird.reject (new Error (response.data.errors))
