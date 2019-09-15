@@ -15,10 +15,13 @@ const INITIAL_STATE = []
 
 const FOCUS_PULL_REQUEST = 'modules/PullRequests/FOCUS_PULL_REQUEST'
 
+const SELECT_PULL_REQUEST = 'modules/PullRequests/SELECT_PULL_REQUEST'
+
 const GET_PULL_REQUESTS_SUCCESS = 'modules/PullRequests/GET_PULL_REQUESTS_SUCCESS'
 
 module.exports.actions = {
   FOCUS_PULL_REQUEST,
+  SELECT_PULL_REQUEST,
   GET_PULL_REQUESTS_SUCCESS,
 }
 
@@ -28,10 +31,13 @@ module.exports.actions = {
 
 const focusPullRequest = index => ({ type: FOCUS_PULL_REQUEST, payload: index })
 
+const selectPullRequest = index => ({ type: SELECT_PULL_REQUEST, payload: index })
+
 const getPullRequestsSuccess = payload => ({ type: GET_PULL_REQUESTS_SUCCESS, payload })
 
 module.exports.actionCreators = {
   focusPullRequest,
+  selectPullRequest,
   getPullRequestsSuccess,
 }
 

@@ -63,7 +63,7 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
 // init
 // --------------------------------------
 
-const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) => {
+const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSelect }) => {
   // ... styles
   const greyTheme = themes[THEME_GREY]
   const styleBorderBox = buildStyleDarkBorderBox (isFocused ? theme : greyTheme)
@@ -121,11 +121,14 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate }) =>
   state.isFocused = isFocused
 
   // ... events
-  parent.screen.key (['up'], (ch, key) => {
-    if (state.isFocused) { onNavigate (-1) }
+  tableViewTable.rows.on('keypress', (x, ch) => {
+    if (R.compose(R.includes(R.__, ['up', 'down']), R.prop('name'))(ch)) {
+      onNavigate(tableViewTable.rows.selected)
+    }
   })
-  parent.screen.key (['down'], (ch, key) => {
-    if (state.isFocused) { onNavigate (1) }
+
+  tableViewTable.rows.on('select', (x, i) => {
+    onSelect(i)
   })
 
   // ...
