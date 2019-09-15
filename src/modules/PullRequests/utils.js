@@ -13,7 +13,7 @@ const headers = {
 }
 
 const getPullRequestsBody = {
-  query: GraphQLUtils.docToString (queryDoc),
+  query: GraphQLUtils.docToString (getPullRequestsQueryDoc),
   variables: {
     repoOwner: process.env.GITHUB_ORG,
     repoName: process.env.GITHUB_REPO,
