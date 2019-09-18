@@ -30,12 +30,11 @@ const buildTable = ({ parent, pullRequestEvents, columnsConfig, isFocused }) => 
   const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequestEvents)
 
   // ... view
-  const { view: tableView, data: tableData } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig, isFocused })
-  const { height: tableHeight } = tableData
+  const { view: tableView } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig, isFocused })
   const view = blessed.box ({
     left: 3,
     top: 2,
-    height: tableHeight,
+    height: '100%-3',
     width: '100%-6',
   })
   view.append (tableView)
@@ -52,7 +51,7 @@ const buildTable = ({ parent, pullRequestEvents, columnsConfig, isFocused }) => 
     },
   ))
 
-  return { view, placeholder, data: { height: tableHeight } }
+  return { view, placeholder, data: {} }
 }
 
 // --------------------------------------
@@ -63,9 +62,6 @@ const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate 
   // ... styles
   const styleBorderBox = buildStyleDarkBorderBox (theme)
 
-  // ... calculations
-  const paddingBottom = 3
-
   // ... view
   // ... ... table
   const {
@@ -75,12 +71,12 @@ const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate 
   } = buildTable ({ parent, pullRequestEvents, columnsConfig, isFocused })
   const { height: tableViewHeight } = tableViewData
 
-  const viewHeight = tableViewHeight
+  const viewHeight = 4//tableViewHeight
 
   const view = blessed.box ({
     left: 0,
     top: 0,
-    height: viewHeight + paddingBottom,
+    height: '100%',
     width: '100%',
   })
 
@@ -90,7 +86,7 @@ const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate 
     {
       left: 0,
       top: 0,
-      height: viewHeight + paddingBottom,
+      height: '100%',
       width: '100%',
       label: ' PULL REQUEST : TIMELINE ',
     },

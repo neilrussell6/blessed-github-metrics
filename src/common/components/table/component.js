@@ -114,7 +114,7 @@ const init = ({ parent, theme, rows, columnsConfig, isFocused, footer }) => {
       top: 0,
       left: 0,
       right: 0,
-      height: tableHeight,
+      height: '100%',
       width: '100%',
       columnSpacing: 1,
       columnWidth: columnWidths,

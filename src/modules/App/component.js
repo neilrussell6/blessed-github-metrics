@@ -21,16 +21,19 @@ const init = ({ store, parent, onNavigate }) => {
   const heading = blessed.box (Common.heading ({ content: ' GITHUB METRICS' }))
   view.append (heading)
 
-  const { view: pullRequestsView, data: pullRequestsData } = PullRequests (store) (parent)
-  const { view: pullRequestEventsView, data: pullRequestEventsData } = PullRequestEvents (store) (parent)
+  const { view: pullRequestsView } = PullRequests (store) (parent)
+  const { view: pullRequestEventsView } = PullRequestEvents (store) (parent)
   const { view: messageView, data: messageViewData } = Message (store) (parent)
+
+  const { height: messageViewHeight } = messageViewData
+  const pullRequestsEventsHeight = 14
 
   // ... view
   // ... ... pull requests
   const pullRequestsWrapperView = blessed.box ({
     left: 'center',
     top: 4,
-    height: pullRequestsData.height,
+    height: `100%-${4+2+pullRequestsEventsHeight+messageViewHeight}`,
     width: '100%-20',
   })
   pullRequestsWrapperView.append (pullRequestsView)
@@ -39,8 +42,8 @@ const init = ({ store, parent, onNavigate }) => {
   // ... ... pull request events
   const pullRequestEventsWrapperView = blessed.box ({
     left: 'center',
-    top: 4 + pullRequestsData.height + 4,
-    height: pullRequestEventsData.height,
+    bottom: messageViewHeight + 1,
+    height: pullRequestsEventsHeight,
     width: '100%-20',
   })
   pullRequestEventsWrapperView.append (pullRequestEventsView)
@@ -49,8 +52,8 @@ const init = ({ store, parent, onNavigate }) => {
   // ... ... message
   const messageWrapperView = blessed.box ({
     left: 0,
-    top: 10,
-    height: messageViewData,
+    bottom: 0,
+    height: messageViewHeight,
     width: '100%',
   })
   messageWrapperView.append (messageView)

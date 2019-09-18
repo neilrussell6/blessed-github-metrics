@@ -31,12 +31,11 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
 
   // ... view
   // ... ... table
-  const { view: tableView, table, data: tableData } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig })
-  const { height: tableHeight } = tableData
+  const { view: tableView, table } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig })
   const view = blessed.box ({
     left: 3,
     top: 2,
-    height: tableHeight - 1,
+    height: '100%-3',
     width: '100%-6',
   })
   view.append (tableView)
@@ -56,7 +55,7 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
     },
   ))
 
-  return { view, table, placeholder, data: { height: tableHeight } }
+  return { view, table, placeholder, data: {} }
 }
 
 // --------------------------------------
@@ -67,9 +66,6 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSe
   // ... styles
   const greyTheme = themes[THEME_GREY]
   const styleBorderBox = buildStyleDarkBorderBox (isFocused ? theme : greyTheme)
-
-  // ... calculations
-  const paddingBottom = isFocused ? 3 : 2
 
   // ... view
   // ... ... table
@@ -86,7 +82,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSe
   const view = blessed.box ({
     left: 0,
     top: 0,
-    height: viewHeight + paddingBottom,
+    height: '100%',
     width: '100%',
   })
 
@@ -96,7 +92,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSe
     {
       left: 0,
       top: 0,
-      height: viewHeight + paddingBottom,
+      height: '100%',
       width: '100%',
       label: ' PULL REQUESTS ',
     },
@@ -143,15 +139,12 @@ module.exports.init = init
 
 const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
   // ... calculations
-  const paddingBottom = isFocused ? 3 : 2
   const keys = R.pluck ('key', columnsConfig)
   const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequests)
 
   // ... view
   // ... ... table
   state.tableView.update ({ parent: view, rows, columnsConfig })
-
-  view.height = state.tableViewHeight + paddingBottom
 
   // ... state
   state.isFocused = isFocused
