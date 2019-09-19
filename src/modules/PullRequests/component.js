@@ -117,13 +117,13 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSe
   state.isFocused = isFocused
 
   // ... events
-  tableViewTable.rows.on('keypress', (x, ch) => {
-    if (R.compose(R.includes(R.__, ['up', 'down']), R.prop('name'))(ch)) {
-      onNavigate(tableViewTable.rows.selected)
+  tableViewTable.rows.on ('keypress', (x, ch) => {
+    if (R.compose (R.includes (R.__, ['up', 'down']), R.prop ('name'))(ch)) {
+      onNavigate (tableViewTable.rows.selected)
     }
   })
 
-  tableViewTable.rows.on('select', (x, i) => {
+  tableViewTable.rows.on ('select', (x, i) => {
     onSelect (R.path (['pullRequests', i]) (state))
   })
 

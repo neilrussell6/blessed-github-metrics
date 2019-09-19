@@ -1,8 +1,8 @@
-const axios = require('axios')
-const Bluebird = require('bluebird')
+const axios = require ('axios')
+const Bluebird = require ('bluebird')
 
-const GraphQLUtils = require('../../common/utils/graphql.utils')
-const getPullRequestsQueryDoc = require('./get-pull-requests.gql')
+const GraphQLUtils = require ('../../common/utils/graphql.utils')
+const getPullRequestsQueryDoc = require ('./get-pull-requests.gql')
 
 //---------------------------------
 // get pull requests
@@ -21,7 +21,7 @@ const getPullRequestsBody = {
 }
 
 const getPullRequests = () => Bluebird
-  .resolve (axios.post (process.env.GITHUB_API_URL, JSON.stringify(getPullRequestsBody), { headers }))
+  .resolve (axios.post (process.env.GITHUB_API_URL, JSON.stringify (getPullRequestsBody), { headers }))
   .then ((response) => {
     if (response.data.errors) {
       return Bluebird.reject (new Error (response.data.errors))

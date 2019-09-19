@@ -8,7 +8,7 @@ const { reducer: pullRequests, utils: pullRequestsUtils } = require ('../../modu
 const { reducer: pullRequestEvents } = require ('../../modules/PullRequestEvents')
 const { reducer: message } = require ('../../modules/Message')
 const { rootEpic } = require ('./epics')
-const { initApp } = require('../../modules/App')
+const { initApp } = require ('../../modules/App')
 
 const configureStore = () => {
   const epicMiddleware = createEpicMiddleware ({

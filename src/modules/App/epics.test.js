@@ -6,7 +6,7 @@ const { actionCreators } = require ('./reducer')
 
 const { initApp, initAppSuccess } = actionCreators
 
-describe('modules/App/epics', () => {
+describe ('modules/App/epics', () => {
   let sandbox = null
 
   beforeEach (async () => {

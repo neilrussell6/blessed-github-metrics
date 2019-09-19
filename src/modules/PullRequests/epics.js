@@ -15,7 +15,7 @@ const { getPullRequestsSuccess } = actionCreators
 module.exports.getPullRequestsEpic = (action$, state$, { pullRequestsUtils }) => (
   action$.pipe (
     ofType (INIT_APP_SUCCESS),
-    switchMap(() => from(pullRequestsUtils.getPullRequests())),
+    switchMap (() => from (pullRequestsUtils.getPullRequests ())),
     map (getPullRequestsSuccess),
   )
 )

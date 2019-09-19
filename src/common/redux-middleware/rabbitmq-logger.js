@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const amqp = require ('amqplib/callback_api')
 const amqplib = require ('amqplib')
-const R = require('ramda')
+const R = require ('ramda')
 
 const opt = { credentials: amqplib.credentials.plain ('rabbitmq', 'rabbitmq') }
 

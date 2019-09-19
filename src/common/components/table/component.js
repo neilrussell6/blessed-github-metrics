@@ -61,7 +61,7 @@ const update = view => ({ parent, rows, columnsConfig, footer }) => {
   const data = R.map (R.pipe (
     R.zip (columnsConfig),
     R.map (([config, column]) => R.pipe (
-      R.ifElse (R.isNil) (R.always('')) (R.identity),
+      R.ifElse (R.isNil) (R.always ('')) (R.identity),
       MiscUtils.formatColumnContent (config),
       MiscUtils.abbreviateColumnContent (config),
     ) (column)),
@@ -145,7 +145,7 @@ const init = ({ parent, theme, rows, columnsConfig, isFocused, footer }) => {
   const data = R.map (R.pipe (
     R.zip (columnsConfig),
     R.map (([config, column]) => R.pipe (
-      R.ifElse (R.isNil) (R.always('')) (R.identity),
+      R.ifElse (R.isNil) (R.always ('')) (R.identity),
       MiscUtils.formatColumnContent (config),
       MiscUtils.abbreviateColumnContent (config),
     ) (column)),

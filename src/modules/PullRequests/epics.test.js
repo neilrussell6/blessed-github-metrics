@@ -7,7 +7,7 @@ const { actionCreators } = require ('./reducer')
 
 const { getPullRequestsSuccess } = actionCreators
 
-describe('modules/PullRequests/epics', () => {
+describe ('modules/PullRequests/epics', () => {
   let sandbox = null
 
   beforeEach (async () => {
@@ -31,7 +31,7 @@ describe('modules/PullRequests/epics', () => {
       const getPullRequests$  = m.cold ('   ---b', values)
       const expected          =         '------c'
 
-      const getPullRequests$Stub = sandbox.stub().returns(getPullRequests$)
+      const getPullRequests$Stub = sandbox.stub ().returns (getPullRequests$)
 
       const dependencies = {
         pullRequestsUtils: {
@@ -46,7 +46,7 @@ describe('modules/PullRequests/epics', () => {
       // ... should succeed as expected
       // ... after correctly getting pull requests
       await m.equal (destination$, expected, values)
-      sinon.assert.calledWithExactly(getPullRequests$Stub)
+      sinon.assert.calledWithExactly (getPullRequests$Stub)
     }))
   })
 })

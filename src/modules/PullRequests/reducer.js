@@ -1,7 +1,7 @@
 const R = require ('ramda')
 
 const { endpoint } = require ('../../common/redux/utils')
-const _R = require('../../common/utils/ramda.utils')
+const _R = require ('../../common/utils/ramda.utils')
 
 //---------------------------------
 // initial state
@@ -35,8 +35,8 @@ module.exports.actionCreators = {
 
 const setPullRequests = (state, { payload }) => R.pipe (
   R.path (['repository', 'pullRequests', 'nodes']),
-  R.map(R.evolve ({ author: R.prop ('login') })),
-  R.map(_R.renameKeys ({ author: 'authorLogin' })),
+  R.map (R.evolve ({ author: R.prop ('login') })),
+  R.map (_R.renameKeys ({ author: 'authorLogin' })),
   R.reverse,
 ) (payload)
 

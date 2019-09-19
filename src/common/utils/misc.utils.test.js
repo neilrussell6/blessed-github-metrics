@@ -6,12 +6,12 @@ const SUT = require ('./misc.utils')
 const { FORMATS } = require ('../components/table')
 
 describe ('misc.utils', () => {
-  beforeEach(async () => {
-    moment.tz.setDefault('UTC')
+  beforeEach (async () => {
+    moment.tz.setDefault ('UTC')
   })
 
-  afterEach(async () => {
-    moment.tz.setDefault()
+  afterEach (async () => {
+    moment.tz.setDefault ()
   })
 
   describe ('abbreviateColumnContent', () => {
