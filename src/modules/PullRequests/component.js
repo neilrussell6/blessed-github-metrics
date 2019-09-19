@@ -124,7 +124,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSe
   })
 
   tableViewTable.rows.on('select', (x, i) => {
-    onSelect(i)
+    onSelect (R.path (['pullRequests', i]) (state))
   })
 
   // ...
@@ -148,6 +148,7 @@ const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
 
   // ... state
   state.isFocused = isFocused
+  state.pullRequests = pullRequests
 }
 
 module.exports.update = update

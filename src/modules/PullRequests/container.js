@@ -1,15 +1,13 @@
 const connect = require ('../../common/redux/connect')
 const Component = require ('./component')
 const selector = require ('./selector.js')
-const { actionCreators } = require ('./reducer')
-
-const { focusPullRequest, selectPullRequest } = actionCreators
+const { focusPullRequest, selectPullRequest } = require ('../PullRequest')
 
 const mapStateToProps = selector
 
 const mapDispatchToProps = dispatch => ({
   onNavigate: index => dispatch (focusPullRequest (index)),
-  onSelect: index => dispatch (selectPullRequest (index)),
+  onSelect: data => dispatch (selectPullRequest (data)),
 })
 
 module.exports = store => connect (store) (
