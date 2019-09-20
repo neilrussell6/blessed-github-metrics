@@ -1,3 +1,3 @@
 const component = require ('./component')
 
-module.exports = component
+module.exports = { component }

@@ -1,22 +1,31 @@
 const blessed = require ('blessed')
 const R = require ('ramda')
 
+const { themes, themeName: defaultThemeName } = require ('../../color-themes')
+
 // --------------------------------------
 // init
 // --------------------------------------
 
-const init = (parent, theme, color, params) => {
-  const lineParams = R.mergeDeepRight ({
-    fg: R.propOr (R.prop ('1') (theme)) (color) (theme)
-  }, {
-    top: R.propOr (0) ('top') (params),
-    width: R.propOr ('100%') ('width') (params),
+const init = ({ parent, theme, color, params }) => {
+  // styles
+  const defaultTheme = themes[defaultThemeName]
+
+  // defaults
+  const _theme = theme ? theme : defaultTheme
+  const _color = color ? color : '1'
+
+  // views
+  const lineParams = {
+    width: '100%',
     left: 0,
     height: 1,
     orientation: 'horizontal',
-  })
+    fg: _theme[_color],
+    ...params,
+  }
   const view = blessed.line (lineParams)
   return { view }
 }
 
-module.exports = R.curry (init)
+module.exports = init

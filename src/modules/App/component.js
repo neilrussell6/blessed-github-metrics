@@ -15,7 +15,7 @@ let state = {}
 // init
 // --------------------------------------
 
-const init = ({ store, parent, onNavigate }) => {
+const init = ({ store, parent, onNavigate, onToggleNavigate }) => {
   const view = blessed.box ({})
 
   const heading = blessed.box (Common.heading ({ content: ' GITHUB METRICS' }))
@@ -26,14 +26,16 @@ const init = ({ store, parent, onNavigate }) => {
   const { view: messageView, data: messageViewData } = Message (store) (parent)
 
   const { height: messageViewHeight } = messageViewData
-  const pullRequestsEventsHeight = 14
+  const unfocusedSectionHeight = 10
+  const pullRequestsTopOffset = 4
+  const pullRequestsHeightAdjustment = pullRequestsTopOffset + 2 + unfocusedSectionHeight + messageViewHeight
 
   // ... view
   // ... ... pull requests
   const pullRequestsWrapperView = blessed.box ({
     left: 'center',
-    top: 4,
-    height: `100%-${4+2+pullRequestsEventsHeight+messageViewHeight}`,
+    top: pullRequestsTopOffset,
+    height: `100%-${pullRequestsHeightAdjustment}`,
     width: '100%-20',
   })
   pullRequestsWrapperView.append (pullRequestsView)
@@ -43,7 +45,7 @@ const init = ({ store, parent, onNavigate }) => {
   const pullRequestEventsWrapperView = blessed.box ({
     left: 'center',
     bottom: messageViewHeight + 1,
-    height: pullRequestsEventsHeight,
+    height: unfocusedSectionHeight,
     width: '100%-20',
   })
   pullRequestEventsWrapperView.append (pullRequestEventsView)
@@ -60,16 +62,25 @@ const init = ({ store, parent, onNavigate }) => {
   view.append (messageWrapperView)
 
   // ... state
+  state.pullRequestsTopOffset = pullRequestsTopOffset
+  state.unfocusedSectionHeight = unfocusedSectionHeight
+  state.messageViewHeight = messageViewHeight
+  state.pullRequestsWrapperView = pullRequestsWrapperView
   state.pullRequestsView = pullRequestsView
+  state.pullRequestEventsWrapperView = pullRequestEventsWrapperView
   state.pullRequestEventsView = pullRequestEventsView
 
   // ... events
-  parent.screen.key (['S-up'], (ch, key) => {
-    onNavigate (0)
-  })
+  // parent.screen.key (['S-up'], (ch, key) => {
+  //   onNavigate (0)
+  // })
+  //
+  // parent.screen.key (['S-down'], (ch, key) => {
+  //   onNavigate (1)
+  // })
 
-  parent.screen.key (['S-down'], (ch, key) => {
-    onNavigate (1)
+  parent.screen.key (['tab'], (ch, key) => {
+    onToggleNavigate ()
   })
 
   return { view }
@@ -82,8 +93,16 @@ module.exports.init = init
 // --------------------------------------
 
 const update = view => ({ selectedSectionIndex }) => {
-  // TODO: make this dynamic
-  state.pullRequestsView.top = selectedSectionIndex === 0 ? 0 : -6
+  const pullRequestsHeightAdjustment = state.pullRequestsTopOffset + 2 + state.unfocusedSectionHeight + state.messageViewHeight
+
+  if (selectedSectionIndex === 0) {
+    state.pullRequestsWrapperView.height = `100%-${pullRequestsHeightAdjustment}`
+    state.pullRequestEventsWrapperView.height = state.unfocusedSectionHeight
+  }
+  if (selectedSectionIndex === 1) {
+    state.pullRequestsWrapperView.height = state.unfocusedSectionHeight
+    state.pullRequestEventsWrapperView.height = `100%-${pullRequestsHeightAdjustment}`
+  }
 }
 
 module.exports.update = update

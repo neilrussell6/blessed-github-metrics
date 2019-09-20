@@ -30,11 +30,11 @@ const buildTable = ({ parent, pullRequestEvents, columnsConfig, isFocused }) => 
   const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequestEvents)
 
   // ... view
-  const { view: tableView } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig, isFocused })
+  const { view: tableView, table } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig })
   const view = blessed.box ({
     left: 3,
     top: 2,
-    height: '100%-3',
+    height: '100%-4',
     width: '100%-6',
   })
   view.append (tableView)
@@ -51,7 +51,7 @@ const buildTable = ({ parent, pullRequestEvents, columnsConfig, isFocused }) => 
     },
   ))
 
-  return { view, placeholder, data: {} }
+  return { view, table, placeholder, data: {} }
 }
 
 // --------------------------------------
@@ -66,6 +66,7 @@ const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate 
   // ... ... table
   const {
     view: tableView,
+    table: tableViewTable,
     placeholder: tablePlaceholderView,
     data: tableViewData,
   } = buildTable ({ parent, pullRequestEvents, columnsConfig, isFocused })
@@ -101,7 +102,7 @@ const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate 
   // ... state
   state.borderView = borderView
   state.tableView = tableView
-  state.tableViewTable = tableView.children[0] // TODO: do this better
+  state.tableViewTable = tableViewTable
   state.tablePlaceholderView = tablePlaceholderView
   state.tableViewHeight = tableViewHeight
   state.isFocused = isFocused
@@ -116,8 +117,23 @@ module.exports.init = init
 // update
 // --------------------------------------
 
-const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
+const update = view => ({ columnsConfig, pullRequestEvents, isFocused }) => {
+  // ... styles
+  const greyTheme = themes[THEME_GREY]
+  const _theme = isFocused ? theme : greyTheme
 
+  // ... view
+  // ... ... border
+  state.borderView.style.border.fg = _theme['1']
+  state.borderView.style.label.fg = _theme['4_faded']
+  // ... ... table
+  if (isFocused) {
+    state.tableViewTable.focus()
+    if (isFocused !== state.isFocused) {
+      state.tableViewTable.rows.select(0)
+    }
+  }
+  view.render()
 }
 
 module.exports.update = update

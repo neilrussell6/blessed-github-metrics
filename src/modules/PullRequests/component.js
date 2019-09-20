@@ -65,7 +65,8 @@ const buildTable = ({ parent, pullRequests, columnsConfig }) => {
 const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSelect }) => {
   // ... styles
   const greyTheme = themes[THEME_GREY]
-  const styleBorderBox = buildStyleDarkBorderBox (isFocused ? theme : greyTheme)
+  const _theme = isFocused ? theme : greyTheme
+  const styleBorderBox = buildStyleDarkBorderBox (_theme)
 
   // ... view
   // ... ... table
@@ -118,7 +119,7 @@ const init = ({ parent, columnsConfig, pullRequests, isFocused, onNavigate, onSe
 
   // ... events
   tableViewTable.rows.on ('keypress', (x, ch) => {
-    if (R.compose (R.includes (R.__, ['up', 'down']), R.prop ('name'))(ch)) {
+    if (R.compose (R.includes (R.__, ['up', 'down']), R.prop ('name')) (ch)) {
       onNavigate (tableViewTable.rows.selected)
     }
   })
@@ -138,13 +139,26 @@ module.exports.init = init
 // --------------------------------------
 
 const update = view => ({ columnsConfig, pullRequests, isFocused }) => {
+  // ... styles
+  const greyTheme = themes[THEME_GREY]
+  const _theme = isFocused ? theme : greyTheme
+
   // ... calculations
   const keys = R.pluck ('key', columnsConfig)
   const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequests)
 
   // ... view
+  // ... ... border
+  state.borderView.style.border.fg = _theme['1']
+  state.borderView.style.label.fg = _theme['4_faded']
   // ... ... table
   state.tableView.update ({ parent: view, rows, columnsConfig })
+  if (isFocused) {
+    state.tableViewTable.focus ()
+  }
+  if (isFocused && state.isFocused !== isFocused) {
+    state.tableViewTable.rows.scrollTo (0)
+  }
 
   // ... state
   state.isFocused = isFocused

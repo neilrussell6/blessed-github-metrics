@@ -4,59 +4,58 @@ const R = require ('ramda')
 
 const { buildStyleTable } = require ('../../styles')
 const { themes, themeName: defaultThemeName, THEME_GREY } = require ('../../color-themes')
-const line = require ('../line')
+const { component: line } = require ('../line')
 const MiscUtils = require ('../../utils/misc.utils')
 
 // --------------------------------------
 // footer
 // --------------------------------------
 
-const buildTableFooter = (parent, theme, columns, columnsConfig, color = null) => {
-  // ... styles
-
-  // ... calculations
-  const columnPositions = R.reduce ((acc, { width }) => (
-    [...acc, R.last (acc) + width]
-  )) ([0]) (columnsConfig)
-
-  // ... views
-  const view = blessed.box ({
-    left: 0,
-    top: 0,
-    height: 1,
-    width: '100%',
-  })
-
-  // ... columns
-  R.forEach (([position, config]) => {
-    const { key, width } = config
-    const columnViewParams = {
-      left: position,
-      height: 1,
-      width,
-      content: R.prop (key, columns),
-      style: {
-        fg: R.propOr (R.prop ('6', theme), color, theme),
-        bold: true,
-      },
-    }
-    const columnView = blessed.box (columnViewParams)
-    view.append (columnView)
-  }) (R.zip (columnPositions) (columnsConfig))
-
-  return { view }
-}
+// const buildTableFooter = (parent, theme, columns, columnsConfig, color = null) => {
+//   // ... styles
+//
+//   // ... calculations
+//   const columnPositions = R.reduce ((acc, { width }) => (
+//     [...acc, R.last (acc) + width]
+//   )) ([0]) (columnsConfig)
+//
+//   // ... views
+//   const view = blessed.box ({
+//     left: 0,
+//     top: 0,
+//     height: 1,
+//     width: '100%',
+//   })
+//
+//   // ... columns
+//   R.forEach (([position, config]) => {
+//     const { key, width } = config
+//     const columnViewParams = {
+//       left: position,
+//       height: 1,
+//       width,
+//       content: R.prop (key, columns),
+//       style: {
+//         fg: R.propOr (R.prop ('6', theme), color, theme),
+//         bold: true,
+//       },
+//     }
+//     const columnView = blessed.box (columnViewParams)
+//     view.append (columnView)
+//   }) (R.zip (columnPositions) (columnsConfig))
+//
+//   return { view }
+// }
 
 // --------------------------------------
 // update
 // --------------------------------------
 
-const update = view => ({ parent, rows, columnsConfig, footer }) => {
+const update = view => ({ parent, rows, columnsConfig, isFocused, footer }) => {
   // defaults
-  const _footer = R.ifElse (R.isNil, R.always (null), R.identity) (footer)
+  // const _footer = R.ifElse (R.isNil, R.always (null), R.identity) (footer)
 
   // ... views
-
   // ... ... table
   const data = R.map (R.pipe (
     R.zip (columnsConfig),
@@ -71,17 +70,17 @@ const update = view => ({ parent, rows, columnsConfig, footer }) => {
     data,
   })
 
-  // ... ... footer
-  // TODO: move to updateTableFooter
-  if (_footer) {
-    const footerView = view.children[3] // TODO: do this better
-    const footerViewColumns = footerView.children[0].children // TODO: do this better
-
-    R.addIndex (R.forEach) ((config, i) => {
-      const { key } = config
-      footerViewColumns[i].content = R.propOr ('', key, footer)
-    }, columnsConfig)
-  }
+  // // ... ... footer
+  // // TODO: move to updateTableFooter
+  // if (_footer) {
+  //   const footerView = view.children[3] // TODO: do this better
+  //   const footerViewColumns = footerView.children[0].children // TODO: do this better
+  //
+  //   R.addIndex (R.forEach) ((config, i) => {
+  //     const { key } = config
+  //     footerViewColumns[i].content = R.propOr ('', key, footer)
+  //   }, columnsConfig)
+  // }
 
   parent.render ()
 }
@@ -90,18 +89,17 @@ const update = view => ({ parent, rows, columnsConfig, footer }) => {
 // init
 // --------------------------------------
 
-const init = ({ parent, theme, rows, columnsConfig, isFocused, footer }) => {
+const init = ({ parent, theme, rows, columnsConfig, footer }) => {
   // defaults
-  const _footer = R.ifElse (R.isNil, R.always (null), R.identity) (footer)
+  // const _footer = R.ifElse (R.isNil, R.always (null), R.identity) (footer)
 
   // styles
   const defaultTheme = themes[defaultThemeName]
   const styleTable = buildStyleTable (theme, defaultTheme)
 
   // calculations
-  const tableHeight = R.clamp (8, 14, rows.length + 4)
+  // const tableHeight = R.clamp (8, 14, rows.length + 4)
   const columnWidths = R.pluck ('width', columnsConfig)
-  const columnTotalWidth = R.sum (columnWidths)
 
   // views
   const view = blessed.box ()
@@ -110,37 +108,33 @@ const init = ({ parent, theme, rows, columnsConfig, isFocused, footer }) => {
     styleTable,
     {
       keys: true,
-      interactive: isFocused,
+      interactive: true,
       top: 0,
       left: 0,
-      right: 0,
       height: '100%',
       width: '100%',
-      columnSpacing: 1,
+      columnSpacing: 0,
       columnWidth: columnWidths,
     },
   ))
 
-  const _line = line (parent, themes[THEME_GREY], '0')
-
-  const { view: headerLineView } = _line ({ top: 1 })
-  const { view: footerLineView } = _line ({ top: tableHeight - 2 })
+  const { view: headerLineView } = line ({ parent, theme: themes[THEME_GREY], color: '0', params: { top: 1 } })  // const { view: footerLineView } = _line ({ top: tableHeight - 2 })
 
   view.append (table)
   view.append (headerLineView)
   // view.append (footerLineView)
 
-  if (_footer) {
-    const { view: footerView } = buildTableFooter (parent, theme, footer, columnsConfig)
-    const footerWrapperView = blessed.box ({
-      left: 1,
-      top: tableHeight - 1,
-      width: columnTotalWidth,
-    })
-
-    footerWrapperView.append (footerView)
-    view.append (footerWrapperView)
-  }
+  // if (_footer) {
+  //   const { view: footerView } = buildTableFooter (parent, theme, footer, columnsConfig)
+  //   const footerWrapperView = blessed.box ({
+  //     left: 1,
+  //     top: tableHeight - 1,
+  //     width: columnTotalWidth,
+  //   })
+  //
+  //   footerWrapperView.append (footerView)
+  //   view.append (footerWrapperView)
+  // }
 
   const data = R.map (R.pipe (
     R.zip (columnsConfig),
@@ -158,7 +152,8 @@ const init = ({ parent, theme, rows, columnsConfig, isFocused, footer }) => {
   // ... attach update
   view.update = update (view)
 
-  return { view, table, data: { height: tableHeight } }
+  return { view, table, data: {} }
+  // return { view, table, data: { height: tableHeight } }
 }
 
 module.exports = init
