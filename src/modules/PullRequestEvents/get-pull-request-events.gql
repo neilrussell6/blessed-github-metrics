@@ -1,0 +1,119 @@
+query getPullRequestEvents($repoOwner: String!, $repoName: String!, $branch: String!, $count: Int = 50){
+  repository(owner: $repoOwner, name: $repoName) {
+    pullRequests(last: $count, headRefName: $branch) {
+      nodes {
+        title
+        baseRefName
+        headRefName
+        author {
+          login
+        }
+        state
+        createdAt
+        publishedAt
+        updatedAt
+        mergedAt
+        mergedBy {
+          login
+        }
+        mergeable
+        timelineItems(first: $count, itemTypes: [
+          PULL_REQUEST_COMMIT,
+          REVIEW_REQUESTED_EVENT,
+          REVIEW_REQUEST_REMOVED_EVENT,
+          REVIEW_DISMISSED_EVENT,
+          PULL_REQUEST_REVIEW,
+          MERGED_EVENT,
+          HEAD_REF_DELETED_EVENT,
+          CLOSED_EVENT,
+          ASSIGNED_EVENT,
+        ]) {
+          nodes {
+            __typename
+            ... on PullRequestCommit {
+              commit {
+                committedDate
+                pushedDate
+                committer {
+                  user {
+                    login
+                  }
+                }
+                author {
+                  user {
+                    login
+                  }
+                }
+              }
+            }
+            ... on ReviewRequestedEvent {
+              createdAt
+              actor {
+                login
+              }
+              requestedReviewer {
+                ...ReviewerInfo
+              }
+            }
+            ... on ReviewDismissedEvent {
+              createdAt
+              actor {
+                login
+              }
+            }
+            ... on ReviewRequestRemovedEvent {
+              createdAt
+              actor {
+                login
+              }
+              requestedReviewer {
+                ...ReviewerInfo
+              }
+            }
+            ... on PullRequestReview {
+              state
+              submittedAt
+              author {
+                login
+              }
+            }
+            ... on MergedEvent {
+              mergeRefName
+              createdAt
+              actor {
+                login
+              }
+            }
+            ... on HeadRefDeletedEvent {
+              createdAt
+              actor {
+                login
+              }
+            }
+            ... on ClosedEvent {
+              createdAt
+              actor {
+                login
+              }
+            }
+            ... on AssignedEvent {
+              createdAt
+              actor {
+                login
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment ReviewerInfo on RequestedReviewer {
+  ... on User {
+    login
+  }
+  ... on Team {
+    name
+  }
+}

@@ -1,10 +1,10 @@
 const R = require ('ramda')
 const { createSelector } = require ('reselect')
 
-const selector = createSelector ([R.identity], (
+const selector = createSelector ([R.prop ('message')], (
   R.applySpec ({
-    type: R.path (['message', 'type']),
-    message: R.path (['message', 'message']),
+    type: R.prop ('type'),
+    message: R.prop ('message'),
   })
 ))
 

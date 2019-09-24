@@ -1,111 +1,29 @@
+const R = require ('ramda')
+
 const { endpoint } = require ('../../common/redux/utils')
+const { eventTypeToLabelMap } = require('./constants')
 
 //---------------------------------
 // initial state
 //---------------------------------
 
-const INITIAL_STATE = [[
-  {
-    at: '2019-09-07T08:20:10Z',
-    eventLabel: 'COMMIT',
-    authorOrActor: 'user1',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-07T08:50:10Z',
-    eventLabel: 'COMMIT',
-    authorOrActor: 'user1',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-07T08:50:10Z',
-    eventLabel: 'COMMIT : PUSH',
-    authorOrActor: 'user1',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-07T09:20:00Z',
-    eventLabel: 'REVIEW : REQUEST',
-    authorOrActor: 'user1',
-    targetUser: 'user2',
-    delay: null,
-  },
-  {
-    at: '2019-09-07T09:25:00Z',
-    eventLabel: 'REVIEW : REQUEST',
-    authorOrActor: 'user1',
-    targetUser: 'user3',
-    delay: null,
-  },
-  {
-    at: '2019-09-07T09:45:12Z',
-    eventLabel: 'REVIEW : COMMENT',
-    authorOrActor: 'user2',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-07T12:15:16Z',
-    eventLabel: 'REVIEW : CHANGE REQUEST',
-    authorOrActor: 'user2',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-07T13:11:56Z',
-    eventLabel: 'COMMIT',
-    authorOrActor: 'user1',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-07T13:11:56Z',
-    eventLabel: 'COMMIT : PUSH',
-    authorOrActor: 'user1',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-07T15:50:40Z',
-    eventLabel: 'REVIEW : REQUEST',
-    authorOrActor: 'user1',
-    targetUser: 'user2',
-    delay: null,
-  },
-  {
-    at: '2019-09-08T08:30:55Z',
-    eventLabel: 'REVIEW : APPROVAL',
-    authorOrActor: 'user2',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-08T10:42:00Z',
-    eventLabel: 'MERGE',
-    authorOrActor: 'user1',
-    targetUser: null,
-    delay: null,
-  },
-  {
-    at: '2019-09-08T10:45:00Z',
-    eventLabel: 'DELETE',
-    authorOrActor: 'user1',
-    targetUser: null,
-    delay: null,
-  },
-]]
+const INITIAL_STATE = []
 
 //---------------------------------
 // actions
 //---------------------------------
 
-const FOCUS_PULL_REQUEST_EVENT = 'app/PullRequests/FOCUS_PULL_REQUEST_EVENT'
+const FOCUS_PULL_REQUEST_EVENT = 'modules/PullRequestEvents/FOCUS_PULL_REQUEST_EVENT'
 
-module.exports.actions = {
+const HTTP_GET_PULL_REQUEST_EVENTS = 'modules/PullRequestEvents/HTTP_GET_PULL_REQUEST_EVENTS'
+const HTTP_GET_PULL_REQUEST_EVENTS_SUCCESS = 'modules/PullRequestEvents/HTTP_GET_PULL_REQUEST_EVENTS_SUCCESS'
+const HTTP_GET_PULL_REQUEST_EVENTS_FAILURE = 'modules/PullRequestEvents/HTTP_GET_PULL_REQUEST_EVENTS_FAILURE'
+
+const actions = {
   FOCUS_PULL_REQUEST_EVENT,
+  HTTP_GET_PULL_REQUEST_EVENTS,
+  HTTP_GET_PULL_REQUEST_EVENTS_SUCCESS,
+  HTTP_GET_PULL_REQUEST_EVENTS_FAILURE,
 }
 
 //---------------------------------
@@ -114,14 +32,63 @@ module.exports.actions = {
 
 const focusPullRequestEvent = index => ({ type: FOCUS_PULL_REQUEST_EVENT, payload: index })
 
-module.exports.actionCreators = {
+const httpGetPullRequestEvents = pullRequest => ({ type: HTTP_GET_PULL_REQUEST_EVENTS, payload: pullRequest })
+const httpGetPullRequestEventsSuccess = pullRequestEvent => ({ type: HTTP_GET_PULL_REQUEST_EVENTS_SUCCESS, payload: pullRequestEvent })
+const httpGetPullRequestEventsFailure = message => ({ type: HTTP_GET_PULL_REQUEST_EVENTS_FAILURE, payload: message })
+
+const actionCreators = {
   focusPullRequestEvent,
+  httpGetPullRequestEvents,
+  httpGetPullRequestEventsSuccess,
+  httpGetPullRequestEventsFailure,
 }
+
+//---------------------------------
+// reducers
+//---------------------------------
+
+const setPullRequestEvents = (state, { payload }) => R.pipe (
+  R.path (['repository', 'pullRequests', 'nodes', 0, 'timelineItems', 'nodes']),
+  // ... transform commit event to look more like other events
+  R.map (R.ifElse (
+    R.has ('commit'),
+    R.pipe (
+      R.converge (R.mergeDeepRight, [R.prop ('commit'), R.pick (['__typename'])]),
+      R.evolve ({ actor: R.prop ('user') }),
+    ),
+    R.identity,
+  )),
+  // ... flatten user fields
+  R.map (R.evolve ({
+    author: x => R.pathOr (R.prop ('login') (x)) (['user', 'login']) (x),
+    actor: R.prop ('login'),
+    requestedReviewer: R.prop ('login'),
+  })),
+  // ... map result fields
+  R.map (x => ({
+    eventLabel: R.prop (x.state ? `${x.__typename}__${x.state}` : x.__typename) (eventTypeToLabelMap),
+    at: R.compose (R.head, R.filter (R.complement (R.isNil)), R.values, R.pick (['pushedDate', 'createdAt', 'submittedAt'])) (x),
+    authorOrActor: x.actor ? x.actor : x.author,
+    targetUser: x.requestedReviewer ? x.requestedReviewer : null,
+    delay: null,
+  })),
+  // ... reverse order
+  R.reverse,
+) (payload)
 
 //---------------------------------
 // action -> reducer mapping
 //---------------------------------
 
-const reducers = {}
+const reducers = {
+  [HTTP_GET_PULL_REQUEST_EVENTS_SUCCESS]: setPullRequestEvents,
+}
 
-module.exports.reducer = endpoint (reducers, INITIAL_STATE)
+const reducer = endpoint (reducers, INITIAL_STATE)
+
+module.exports = {
+  INITIAL_STATE,
+  ...actions,
+  ...actionCreators,
+  reducer,
+}

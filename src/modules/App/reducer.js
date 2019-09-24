@@ -22,7 +22,7 @@ const TOGGLE_FOCUS_SECTION = 'modules/App/TOGGLE_FOCUS_SECTION'
 const INIT_APP = 'modules/App/INIT_APP'
 const INIT_APP_SUCCESS = 'modules/App/INIT_APP_SUCCESS'
 
-module.exports.actions = {
+const actions = {
   FOCUS_SECTION,
   TOGGLE_FOCUS_SECTION,
   INIT_APP,
@@ -40,7 +40,7 @@ const toggleFocusSection = () => ({ type: TOGGLE_FOCUS_SECTION })
 const initApp = () => ({ type: INIT_APP })
 const initAppSuccess = () => ({ type: INIT_APP_SUCCESS })
 
-module.exports.actionCreators = {
+const actionCreators = {
   focusSection,
   toggleFocusSection,
   initApp,
@@ -71,4 +71,11 @@ const reducers = {
   [SELECT_PULL_REQUEST]: setFocusedSectionIndexN (1),
 }
 
-module.exports.reducer = endpoint (reducers, INITIAL_STATE)
+const reducer = endpoint (reducers, INITIAL_STATE)
+
+module.exports = {
+  INITIAL_STATE,
+  ...actions,
+  ...actionCreators,
+  reducer,
+}

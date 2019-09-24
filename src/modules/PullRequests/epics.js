@@ -1,21 +1,55 @@
-const { from } = require ('rxjs')
-const { map, switchMap } = require ('rxjs/operators')
+const { from, of } = require ('rxjs')
+const { map, mapTo, switchMap, catchError } = require ('rxjs/operators')
 const { ofType } = require ('redux-observable')
+const R = require ('ramda')
 
-const { actions: AppActions } = require ('../App/reducer')
-const { actionCreators } = require ('./reducer')
+const GraphQLUtils = require ('../../common/utils/graphql.utils')
+const getPullRequestsQueryDoc = require ('./get-pull-requests.gql')
+const { INIT_APP_SUCCESS } = require ('../App/reducer')
+const {
+  HTTP_GET_PULL_REQUESTS,
+  httpGetPullRequests,
+  httpGetPullRequestsSuccess,
+  httpGetPullRequestsFailure,
+} = require ('./reducer')
 
-const { INIT_APP_SUCCESS } = AppActions
-const { getPullRequestsSuccess } = actionCreators
+//---------------------------------
+// constants
+//---------------------------------
+
+const COMMON_BODY = {
+  variables: {
+    repoOwner: process.env.GITHUB_ORG,
+    repoName: process.env.GITHUB_REPO,
+  }
+}
 
 //---------------------------------
 // get pull requests
 //---------------------------------
 
-module.exports.getPullRequestsEpic = (action$, state$, { pullRequestsUtils }) => (
+// TODO: move into relay
+module.exports.getPullRequestsRelayEpic = (action$) => (
   action$.pipe (
     ofType (INIT_APP_SUCCESS),
-    switchMap (() => from (pullRequestsUtils.getPullRequests ())),
-    map (getPullRequestsSuccess),
+    map (httpGetPullRequests),
+  )
+)
+
+module.exports.getPullRequestsEpic = (action$, state$, { githubHttpUtils }) => (
+  action$.pipe (
+    ofType (HTTP_GET_PULL_REQUESTS),
+    // ... prepare request body
+    mapTo (GraphQLUtils.docToString (getPullRequestsQueryDoc)),
+    map (R.objOf ('query')),
+    map (R.mergeDeepRight (COMMON_BODY)),
+    // ... http request
+    switchMap (body => from (githubHttpUtils.post ('') (body)).pipe (
+      map (httpGetPullRequestsSuccess),
+      catchError (e => of (e).pipe (
+        map (R.prop ('message')),
+        map (httpGetPullRequestsFailure),
+      )),
+    )),
   )
 )

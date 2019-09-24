@@ -1,25 +1,30 @@
 const { combineReducers, createStore, applyMiddleware } = require ('redux')
 const { createEpicMiddleware } = require ('redux-observable')
 
-const { middleware: rabbitmqLogger } = require ('../redux-middleware/rabbitmq-logger')
 const { reducer: app } = require ('../../modules/App')
 const { reducer: pullRequest } = require ('../../modules/PullRequest')
-const { reducer: pullRequests, utils: pullRequestsUtils } = require ('../../modules/PullRequests')
+const { utils: httpUtils } = require ('../modules/HTTP')
+const { reducer: pullRequests } = require ('../../modules/PullRequests')
 const { reducer: pullRequestEvents } = require ('../../modules/PullRequestEvents')
 const { reducer: message } = require ('../../modules/Message')
 const { rootEpic } = require ('./epics')
 const { initApp } = require ('../../modules/App')
 
+const GITHUB_COMMON_HEADERS = {
+  Authorization: `token ${process.env.GITHUB_ACCESS_TOKEN}`,
+}
+const GITHUB_API_URL = process.env.GITHUB_API_URL
+const githubHttpUtils = httpUtils.factory (GITHUB_COMMON_HEADERS) (GITHUB_API_URL)
+
 const configureStore = () => {
   const epicMiddleware = createEpicMiddleware ({
     dependencies: {
-      pullRequestsUtils,
+      githubHttpUtils,
     },
   })
 
   const middleware = [
     epicMiddleware,
-    rabbitmqLogger,
   ]
 
   const reducer = combineReducers ({
@@ -32,7 +37,6 @@ const configureStore = () => {
 
   const store = createStore (reducer, {}, applyMiddleware (...middleware))
 
-  // TODO: wait for rabbitmq logger is ready before doing this
   epicMiddleware.run (rootEpic)
 
   store.dispatch (initApp ())

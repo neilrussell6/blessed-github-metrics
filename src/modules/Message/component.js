@@ -3,18 +3,26 @@ const R = require ('ramda')
 
 const { buildStyleBox, buildStyleFadedBorderBox } = require ('../../common/styles')
 const { themes, THEME_GREY, THEME_CRIMSON } = require ('../../common/color-themes')
+const {
+  MESSAGE_TYPE_DEFAULT,
+  MESSAGE_TYPE_HELP,
+  MESSAGE_TYPE_ERROR,
+} = require ('./constants')
 
 // --------------------------------------
 // constants
 // --------------------------------------
 
 const labels = {
-  'help': ' HELP ',
-  'error': ' ERROR ',
+  [MESSAGE_TYPE_DEFAULT]: ' HELP ',
+  [MESSAGE_TYPE_HELP]: ' HELP ',
+  [MESSAGE_TYPE_ERROR]: ' ERROR ',
 }
+
 const themeNames = {
-  'error': THEME_CRIMSON,
-  'help': THEME_GREY,
+  [MESSAGE_TYPE_DEFAULT]: THEME_GREY,
+  [MESSAGE_TYPE_HELP]: THEME_GREY,
+  [MESSAGE_TYPE_ERROR]: THEME_CRIMSON,
 }
 
 // --------------------------------------

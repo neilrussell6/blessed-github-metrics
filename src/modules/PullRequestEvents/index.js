@@ -1,9 +1,11 @@
 const Container = require ('./container')
-const { reducer, actions, actionCreators } = require ('./reducer')
+const reducer = require ('./reducer')
+const epics = require ('./epics')
+const constants = require('./constants')
 
 module.exports = {
   Component: Container,
-  reducer,
-  ...actions,
-  ...actionCreators,
+  ...reducer,
+  ...constants,
+  epics,
 }

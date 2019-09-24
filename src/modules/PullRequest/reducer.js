@@ -12,9 +12,9 @@ const INITIAL_STATE = null
 
 const FOCUS_PULL_REQUEST = 'modules/PullRequest/FOCUS_PULL_REQUEST'
 
-const SELECT_PULL_REQUEST = 'modules/PullRequests/SELECT_PULL_REQUEST'
+const SELECT_PULL_REQUEST = 'modules/PullRequest/SELECT_PULL_REQUEST'
 
-module.exports.actions = {
+const actions = {
   FOCUS_PULL_REQUEST,
   SELECT_PULL_REQUEST,
 }
@@ -27,7 +27,7 @@ const focusPullRequest = index => ({ type: FOCUS_PULL_REQUEST, payload: index })
 
 const selectPullRequest = data => ({ type: SELECT_PULL_REQUEST, payload: data })
 
-module.exports.actionCreators = {
+const actionCreators = {
   focusPullRequest,
   selectPullRequest,
 }
@@ -46,4 +46,11 @@ const reducers = {
   [SELECT_PULL_REQUEST]: setPullRequest,
 }
 
-module.exports.reducer = endpoint (reducers, INITIAL_STATE)
+const reducer = endpoint (reducers, INITIAL_STATE)
+
+module.exports = {
+  INITIAL_STATE,
+  ...actions,
+  ...actionCreators,
+  reducer,
+}

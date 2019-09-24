@@ -1,5 +1,6 @@
 query getPullRequests($repoOwner: String!, $repoName: String!, $prCount: Int = 50) {
   repository(owner: $repoOwner, name: $repoName) {
+#    pullRequests(last: $prCount, states: [OPEN]) {
     pullRequests(last: $prCount) {
       nodes {
         title
@@ -13,6 +14,18 @@ query getPullRequests($repoOwner: String!, $repoName: String!, $prCount: Int = 5
         publishedAt
         updatedAt
         mergedAt
+        mergedBy {
+          login
+        }
+        reviewRequests {
+          totalCount
+        }
+        reviewsApproved: reviews(states: [APPROVED]) {
+          totalCount
+        }
+        reviewsChangesRequested: reviews(states: [CHANGES_REQUESTED]) {
+          totalCount
+        }
       }
     }
   }

@@ -1,10 +1,12 @@
 {
   "pullRequests": {
     "tableColumnsConfig": [
-      { "key": "title", "label": "TITLE", "width": 34, "ellipsis": "end" },
-      { "key": "baseRefName", "label": "BASE", "width": 12, "ellipsis": "end" },
-      { "key": "authorLogin", "label": "AUTHOR", "width": 18, "ellipsis": "end" },
+      { "key": "title", "label": "TITLE", "width": 36, "ellipsis": "end" },
+      { "key": "author", "label": "AUTHOR", "width": 16, "ellipsis": "end" },
       { "key": "state", "label": "STATE", "width": 10 },
+      { "key": "reviewRequests", "label": "RRs", "width": 6 },
+      { "key": "reviewsChangesRequested", "label": "CRs", "width": 6 },
+      { "key": "reviewsApproved", "label": "APRs", "width": 6 },
       { "key": "createdAt", "label": "CREATED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
       { "key": "updatedAt", "label": "UPDATED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
       { "key": "mergedAt", "label": "MERGED", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" }
@@ -13,7 +15,7 @@
   "pullRequestEvents": {
     "tableColumnsConfig": [
       { "key": "at", "label": "TIME", "width": 18, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
-      { "key": "eventLabel", "label": "EVENT", "width": 26, "ellipsis": "end" },
+      { "key": "eventLabel", "label": "EVENT", "width": 32, "ellipsis": "end" },
       { "key": "authorOrActor", "label": "AUTHOR/ACTOR", "width": 16, "ellipsis": "end" },
       { "key": "targetUser", "label": "TARGET USER", "width": 16, "ellipsis": "end" },
       { "key": "delay", "label": "DELAY", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" }

@@ -6,7 +6,7 @@ const _R = require ('../../common/utils/ramda.utils')
 
 const selector = createSelector ([R.identity], R.pipe (
   _R.assocSpec ({
-    pullRequestEvents: R.path (['pullRequestEvents', 0]),
+    pullRequestEvents: R.prop ('pullRequestEvents'),
     isFocused: R.pathEq (['app', 'selectedSectionIndex'], 1),
     columnsConfig: R.always (R.path (['pullRequestEvents' , 'tableColumnsConfig']) (Settings)),
   }),

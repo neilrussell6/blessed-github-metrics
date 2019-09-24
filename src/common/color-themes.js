@@ -3,7 +3,7 @@ const R = require ('ramda')
 const THEME_GREY = 'grey'
 const THEME_DEEP_SEA = 'deep-sea'
 const THEME_SPACE_TERM = 'space-term'
-const THEME_BLOOD = 'blood'
+const THEME_CRIMSON = 'crimson'
 
 const themes = {
   [THEME_GREY]: {
@@ -42,7 +42,7 @@ const themes = {
     '6': 193,
     '7': 255,
   },
-  [THEME_BLOOD]: {
+  [THEME_CRIMSON]: {
     '0': 52,
     '1': 88,
     '2': 124,
@@ -63,7 +63,7 @@ module.exports = {
   THEME_GREY,
   THEME_DEEP_SEA,
   THEME_SPACE_TERM,
-  THEME_BLOOD,
+  THEME_CRIMSON,
   themeName: themeName, // TODO: phase out in favour of THEME_DEFAULT
   theme: themes[themeName], // TODO: phase out in favour of THEME
   themes, // TODO: phase out in favour of THEMES
@@ -72,7 +72,7 @@ module.exports = {
     'GREY': themes[THEME_GREY],
     'DEEP_SEA': themes[THEME_DEEP_SEA],
     'SPACE_TERM': themes[THEME_SPACE_TERM],
-    'BLOOD': themes[THEME_BLOOD],
+    'CRIMSON': themes[THEME_CRIMSON],
     'DEFAULT': themes[THEME_DEFAULT],
   },
 }

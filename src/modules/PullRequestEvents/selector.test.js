@@ -6,14 +6,13 @@ const Settings = require ('../../config/settings')
 
 describe ('modules/PullRequests/selector', () => {
   describe ('pullRequestEvents', () => {
-    it ('should return first pull events directly from state as is', () => {
+    it ('should return pull request events from state as is', () => {
       const state = {
         pullRequestEvents: [
-          'STATE PULL REQUEST 1 EVENTS',
-          'STATE PULL REQUEST 2 EVENTS',
+          { id: 'PULL REQUEST 1 EVENT 1' },
         ],
       }
-      assert.equal (SUT (state).pullRequestEvents, 'STATE PULL REQUEST 1 EVENTS')
+      assert.deepEqual (SUT (state).pullRequestEvents, state.pullRequestEvents)
     })
   })
 

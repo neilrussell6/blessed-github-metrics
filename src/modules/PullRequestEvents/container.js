@@ -1,9 +1,7 @@
 const connect = require ('../../common/redux/connect')
 const Component = require ('./component')
 const selector = require ('./selector.js')
-const { actionCreators } = require ('./reducer')
-
-const { focusPullRequestEvent } = actionCreators
+const { focusPullRequestEvent } = require ('./reducer')
 
 const mapStateToProps = selector
 

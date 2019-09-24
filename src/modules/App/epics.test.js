@@ -2,9 +2,7 @@ const { marbles } = require ('rxjs-marbles/mocha')
 const sinon = require ('sinon')
 
 const SUT = require ('./epics')
-const { actionCreators } = require ('./reducer')
-
-const { initApp, initAppSuccess } = actionCreators
+const { initApp, initAppSuccess } = require ('./reducer')
 
 describe ('modules/App/epics', () => {
   let sandbox = null

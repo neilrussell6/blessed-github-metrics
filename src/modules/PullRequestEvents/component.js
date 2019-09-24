@@ -101,7 +101,7 @@ const init = ({ parent, columnsConfig, pullRequestEvents, isFocused, onNavigate 
 
   // ... state
   state.borderView = borderView
-  state.tableView = tableView
+  state.tableView = tableView.children[0]
   state.tableViewTable = tableViewTable
   state.tablePlaceholderView = tablePlaceholderView
   state.tableViewHeight = tableViewHeight
@@ -122,17 +122,27 @@ const update = view => ({ columnsConfig, pullRequestEvents, isFocused }) => {
   const greyTheme = themes[THEME_GREY]
   const _theme = isFocused ? theme : greyTheme
 
+  // ... calculations
+  const keys = R.pluck ('key', columnsConfig)
+  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequestEvents)
+
   // ... view
   // ... ... border
   state.borderView.style.border.fg = _theme['1']
   state.borderView.style.label.fg = _theme['4_faded']
   // ... ... table
+  state.tableView.update ({ parent: view, rows, columnsConfig })
   if (isFocused) {
     state.tableViewTable.focus()
     if (isFocused !== state.isFocused) {
       state.tableViewTable.rows.select(0)
     }
   }
+
+  // ... state
+  state.isFocused = isFocused
+  state.pullRequestEvents = pullRequestEvents
+
   view.render()
 }
 

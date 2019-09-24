@@ -1,7 +1,5 @@
-const { reducer, actions, actionCreators } = require ('./reducer')
+const reducer = require ('./reducer')
 
 module.exports = {
-  reducer,
-  ...actions,
-  ...actionCreators,
+  ...reducer,
 }

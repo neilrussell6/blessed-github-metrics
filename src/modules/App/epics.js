@@ -1,10 +1,7 @@
 const { mapTo, delay } = require ('rxjs/operators')
 const { ofType } = require ('redux-observable')
 
-const { actions, actionCreators } = require ('./reducer')
-
-const { INIT_APP } = actions
-const { initAppSuccess } = actionCreators
+const { INIT_APP, initAppSuccess } = require ('./reducer')
 
 //---------------------------------
 // init app
