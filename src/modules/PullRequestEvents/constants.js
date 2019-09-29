@@ -68,3 +68,17 @@ const eventTypeToLabelMap = {
 }
 
 module.exports.eventTypeToLabelMap = eventTypeToLabelMap
+
+//---------------------------------
+// participant roles
+//---------------------------------
+
+const PARTICIPANT_ROLE_AUTHOR = 'AUTHOR'
+const PARTICIPANT_ROLE_REVIEWER = 'REVIEWER'
+
+const participantRoles = {
+  AUTHOR: PARTICIPANT_ROLE_AUTHOR,
+  REVIEWER: PARTICIPANT_ROLE_REVIEWER,
+}
+
+module.exports.participantRoles = participantRoles
