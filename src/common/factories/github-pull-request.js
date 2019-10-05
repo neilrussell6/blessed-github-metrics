@@ -1,13 +1,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-const R = require('ramda')
-const Faker = require('faker')
+const R = require ('ramda')
+const Faker = require ('faker')
 
-function GithubPullRequest(data) {
-  R.compose (R.forEach (([k, v]) => this[k] = v), R.toPairs) (data)
-}
+const GenericModel = require('./generic-model')
 
-module.exports = factory => factory.define('GithubPullRequest', GithubPullRequest, config => ({
+module.exports = factory => factory.define ('GithubPullRequest', GenericModel, config => ({
   title: Faker.lorem.sentence,
   baseRefName: 'develop',
   headRefName: R.compose (R.replace (/\s/) ('_'), Faker.lorem.sentence),

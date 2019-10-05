@@ -1,13 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-const R = require('ramda')
-const Faker = require('faker')
+const R = require ('ramda')
+const Faker = require ('faker')
 
 const { eventTypes, pullRequestReviewStates } = require('../../modules/PullRequestEvents')
-
-function GithubPullRequestEvent(data) {
-  R.compose (R.forEach (([k, v]) => this[k] = v), R.toPairs) (data)
-}
+const GenericModel = require('./generic-model')
 
 const PullRequestCommit = ({
   __typename: eventTypes.PULL_REQUEST_COMMIT,
@@ -80,7 +77,7 @@ const typeMap = {
   [eventTypes.ASSIGNED_EVENT]: AssignedEvent,
 }
 
-module.exports = factory => factory.define('GithubPullRequestEvent', GithubPullRequestEvent, config => (
+module.exports = factory => factory.define ('GithubPullRequestEvent', GenericModel, config => (
   R.ifElse (
     R.has ('type'),
     R.compose (R.prop (R.__, typeMap), R.prop ('type')),

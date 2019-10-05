@@ -1,3 +1,13 @@
+const HTTP_ERROR = 'HttpError'
+const HTTP_ERROR_MESSAGE = 'HTTP Error'
+const HTTP_CONNECTION_ERROR = 'HttpConnectionError'
+const HTTP_CONNECTION_ERROR_MESSAGE = 'HTTP Connection Error'
+
+module.exports.HTTP_ERROR = HTTP_ERROR
+module.exports.HTTP_ERROR_MESSAGE = HTTP_ERROR_MESSAGE
+module.exports.HTTP_CONNECTION_ERROR = HTTP_CONNECTION_ERROR
+module.exports.HTTP_CONNECTION_ERROR_MESSAGE = HTTP_CONNECTION_ERROR_MESSAGE
+
 //---------------------------------
 // HTTP
 //---------------------------------

@@ -27,6 +27,7 @@ query getPullRequestEvents($repoOwner: String!, $repoName: String!, $branch: Str
           HEAD_REF_DELETED_EVENT,
           CLOSED_EVENT,
           ASSIGNED_EVENT,
+          UNASSIGNED_EVENT,
         ]) {
           nodes {
             __typename
@@ -59,6 +60,11 @@ query getPullRequestEvents($repoOwner: String!, $repoName: String!, $branch: Str
               createdAt
               actor {
                 login
+              }
+              review {
+                author {
+                  login
+                }
               }
             }
             ... on ReviewRequestRemovedEvent {
@@ -100,6 +106,22 @@ query getPullRequestEvents($repoOwner: String!, $repoName: String!, $branch: Str
               createdAt
               actor {
                 login
+              }
+              assignee {
+                ... on User {
+                  login
+                }
+              }
+            }
+            ... on UnassignedEvent {
+              createdAt
+              actor {
+                login
+              }
+              assignee {
+                ... on User {
+                  login
+                }
               }
             }
           }

@@ -233,7 +233,7 @@ describe ('modules/PullRequestEvents/reducer', () => {
 
       // then ... should map event type and sometimes state to the expected event label
       const resultLabels = R.pluck ('eventLabel') (result)
-      assert.sameMembers(resultLabels, R.reverse ([
+      assert.sameMembers (resultLabels, R.reverse ([
         'COMMIT',
         'REVIEW REQUESTED',
         'REVIEW DISMISSED',
@@ -245,7 +245,7 @@ describe ('modules/PullRequestEvents/reducer', () => {
         'MERGED',
         'DELETED BRANCH',
         'CLOSED',
-        'PR RE-ASSIGNED',
+        'PR ASSIGNED',
       ]))
     })
 

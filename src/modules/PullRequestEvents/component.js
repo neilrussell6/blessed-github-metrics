@@ -27,7 +27,7 @@ const buildTable = ({ parent, pullRequestEvents, columnsConfig, isFocused }) => 
 
   // ... calculations
   const keys = R.pluck ('key', columnsConfig)
-  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, '')), pullRequestEvents)
+  const rows = R.map (R.compose (R.values, _R.pickAll (keys, R.__, ''))) (pullRequestEvents)
 
   // ... view
   const { view: tableView, table } = Comps.table ({ parent, theme: greyTheme, rows, columnsConfig })
