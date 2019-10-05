@@ -175,10 +175,6 @@ const setPullRequestEvents = (state, { payload }) => R.pipe (
     targetUser: x.requestedReviewer ? x.requestedReviewer : (x.assignee ? x.assignee : R.pathOr (null) (['review', 'author', 'login']) (x)),
     delay: null,
   })),
-  // R.tap(x => console.log('################################ 2')),
-  // R.tap(x => console.log(x)),
-  // R.tap(x => console.log('################################ 3')),
-  // R.tap(x => console.log(x)),
   // ... sort by date
   R.sortBy (R.prop ('at')),
   // ... restrict to 2 contiguous events

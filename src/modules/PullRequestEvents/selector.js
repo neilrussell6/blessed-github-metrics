@@ -11,8 +11,6 @@ const pullRequestEventsSelector = createSelector ([
     _R.assocSpec ({
       responsibleParticipants: R.pipe (
         R.prop ('participants'),
-        // R.tap(x => console.log('################################ ?')),
-        // R.tap(x => console.log(x)),
         R.filter (R.propEq ('isResponsible') (true)),
         R.pluck ('login'),
         R.join (', ')

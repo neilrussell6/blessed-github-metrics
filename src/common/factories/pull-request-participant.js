@@ -4,7 +4,6 @@ const Faker = require ('faker')
 
 const GenericModel = require('./generic-model')
 const { participantRoles } = require('../../modules/PullRequestEvents')
-console.log(participantRoles)
 
 module.exports = factory => factory.define ('PullRequestParticipant', GenericModel, ({
   login: Faker.internet.userName,
