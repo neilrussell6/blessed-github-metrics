@@ -754,7 +754,9 @@ describe ('modules/PullRequestEvents/reducer', () => {
         const action = httpGetPullRequestEventsSuccess (payload)
         const result = SUT (state, action)
 
-        // then ... should assign responsibility back to author on first review
+        // then
+        // ... should assign responsibility to requested reviewer
+        // ... and should assign responsibility back to author when reviewer completes review
         const participants = R.compose (R.reverse, R.pluck ('participants')) (result)
         // ... commit : author
         const event1Participants = participants[0]
