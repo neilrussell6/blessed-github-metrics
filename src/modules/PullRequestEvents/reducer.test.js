@@ -501,7 +501,58 @@ describe ('modules/PullRequestEvents/reducer', () => {
         // TODO: test and implement
       })
 
-      it ('should never remove a participant', async () => {
+      it ('should remove reviewers from participants when review is revoked', async () => {
+        // when
+        // ... we update our state from a http response including
+        // ... an initial commit event, 2 review requests and a review request removal
+        const state = []
+        const pullRequestInitialCommit = await factory.build (
+          'GithubPullRequestEvent',
+          { commit: { author: { user: { login: 'USER 1 AUTHOR' } }, pushedDate: moment ().subtract (4, 'hours').toISOString () } },
+          { type: eventTypes.PULL_REQUEST_COMMIT },
+        )
+        const pullRequestReviewRequest1 = await factory.build (
+          'GithubPullRequestEvent',
+          { requestedReviewer: { login: 'USER 2 REVIEWER 1' }, createdAt: moment ().subtract (3, 'hours').toISOString () },
+          { type: eventTypes.REVIEW_REQUESTED_EVENT },
+        )
+        const pullRequestReviewRequest2 = await factory.build (
+          'GithubPullRequestEvent',
+          { requestedReviewer: { login: 'USER 3 REVIEWER 2' }, createdAt: moment ().subtract (2, 'hours').toISOString () },
+          { type: eventTypes.REVIEW_REQUESTED_EVENT },
+        )
+        const pullRequestReviewRequest1Removed = await factory.build (
+          'GithubPullRequestEvent',
+          {
+            actor: { login: 'USER 1 AUTHOR' },
+            requestedReviewer: { login: 'USER 2 REVIEWER 1' },
+            createdAt: moment ().subtract (1, 'hours').toISOString (),
+          },
+          { type: eventTypes.REVIEW_REQUEST_REMOVED_EVENT },
+        )
+
+        const { repository } = await repositoryWithEventsFixture ([
+          pullRequestInitialCommit,
+          pullRequestReviewRequest1,
+          pullRequestReviewRequest2,
+          pullRequestReviewRequest1Removed,
+        ])
+        const payload = { repository }
+        const action = httpGetPullRequestEventsSuccess (payload)
+        const result = SUT (state, action)
+        const chronologicalResult = R.reverse (result)
+
+        // then
+        // ... should have removed reviewer 1 after author removed review request
+        const participants = R.pluck ('participants') (chronologicalResult)
+        // ... author, reviewer2
+        const event4Participants = participants[3]
+        assert.equal (event4Participants.length, 2)
+        assert.include (event4Participants[0], { login: 'USER 1 AUTHOR', role: participantRoles.AUTHOR })
+        assert.include (event4Participants[1], { login: 'USER 3 REVIEWER 2', role: participantRoles.REVIEWER })
+      })
+
+      it ('should never otherwise remove a participant', async () => {
         // TODO: test and implement
       })
     })

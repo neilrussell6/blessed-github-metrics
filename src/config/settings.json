@@ -19,7 +19,7 @@
       { "key": "authorOrActor", "label": "AUTHOR/ACTOR", "width": 16, "ellipsis": "end" },
       { "key": "targetUser", "label": "TARGET USER", "width": 16, "ellipsis": "end" },
       { "key": "delay", "label": "DELAY", "width": 16, "ellipsis": "start", "format": "date", "formatTemplate": "MM/DD HH:mm" },
-      { "key": "responsibleParticipants", "label": "RESPONSIBLE", "width": 36, "ellipsis": "end" }
+      { "key": "responsibleParticipants", "label": "RESPONSIBLE", "width": 86, "ellipsis": "end" }
     ]
   }
 }

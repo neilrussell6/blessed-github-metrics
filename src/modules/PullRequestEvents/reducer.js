@@ -116,6 +116,16 @@ const updateExistingParticipants = existing => R.cond ([
       i => R.adjust (i) (R.assoc ('isResponsible') (false)) (existing),
     ),
   ],
+  // ... review request removed
+  // ... ... remove reviewer
+  [
+    R.propEq ('type') (eventTypes.REVIEW_REQUEST_REMOVED_EVENT),
+    R.pipe (
+      R.prop ('targetUser'),
+      x => R.findIndex (R.propEq ('login') (x)) (existing),
+      i => R.remove (i) (1) (existing),
+    ),
+  ],
   // ... reviewed
   // ... ... set reviewer to not responsible
   // ... ... set author as responsible
@@ -185,7 +195,7 @@ const setPullRequestEvents = (state, { payload }) => R.pipe (
     R.identity,
   )),
   R.flatten,
-  // ... add participants
+  // ... add/remove participants
   R.addIndex (R.reduce) ((events, event, i) => {
     const previousEvent = i === 0 ? {} : R.nth (i - 1) (events)
     const participants = R.propOr ([]) ('participants') (previousEvent)
