@@ -2,6 +2,7 @@ const R = require ('ramda')
 
 const { endpoint } = require ('../../common/redux/utils')
 const { eventTypeToLabelMap, participantRoles, eventTypes, pullRequestReviewStates } = require('./constants')
+const Utils = require('./utils')
 
 //---------------------------------
 // initial state
@@ -45,6 +46,7 @@ const actionCreators = {
 
 //---------------------------------
 // reducers
+// TODO: extract non-reducer functions to utils
 //---------------------------------
 
 const buildParticipant = role => R.mergeDeepRight ({ role })
@@ -65,7 +67,12 @@ const buildNewParticipant = existing => R.cond ([
       R.propEq ('type') (eventTypes.PULL_REQUEST_COMMIT),
       R.always (R.isEmpty (existing)),
     ]),
-    R.compose (R.of, buildAuthorParticipant ({ isActive: true, isResponsible: true }), R.prop ('authorOrActor')),
+    event => R.pipe (
+      R.prop ('authorOrActor'),
+      buildAuthorParticipant ({ isActive: true }),
+      Utils.setParticipantIsResponsible (event),
+      R.of,
+    ) (event),
   ],
   // ... review request
   // ... ... add reviewer if new and set as responsible
@@ -78,7 +85,12 @@ const buildNewParticipant = existing => R.cond ([
         R.isNil,
       ),
     ]),
-    R.compose (R.of, buildReviewerParticipant ({ isResponsible: true }), R.prop ('targetUser')),
+    event => R.pipe (
+      R.prop ('targetUser'),
+      buildReviewerParticipant ({}),
+      Utils.setParticipantIsResponsible (event),
+      R.of,
+    ) (event),
   ],
   // ... default
   [R.T, R.always ([])],
@@ -97,24 +109,24 @@ const updateExistingParticipants = existing => R.cond ([
         R.allPass ([R.complement (R.isNil), R.propEq ('isResponsible') (false)]),
       ),
     ]),
-    R.pipe (
+    event => R.pipe (
       R.prop ('targetUser'),
       x => R.findIndex (R.propEq ('login') (x)) (existing),
-      i => R.adjust (i) (R.assoc ('isResponsible') (true)) (existing),
+      i => R.adjust (i) (Utils.setParticipantIsResponsible (event)) (existing),
       _existing => R.pipe (
         () => R.findIndex (R.propEq ('role') (participantRoles.AUTHOR)) (_existing),
         i => R.adjust (i) (R.assoc ('isResponsible') (false)) (_existing),
       ) (_existing),
-    ),
+    ) (event),
   ],
   // ... review request
   // ... ... set author to not responsible
   [
     R.propEq ('type') (eventTypes.REVIEW_REQUESTED_EVENT),
-    R.pipe (
+    event => R.pipe (
       () => R.findIndex (R.propEq ('role') (participantRoles.AUTHOR)) (existing),
-      i => R.adjust (i) (R.assoc ('isResponsible') (false)) (existing),
-    ),
+      i => R.adjust (i) (Utils.setParticipantIsNotResponsible (event)) (existing),
+    ) (event),
   ],
   // ... review request removed
   // ... ... remove reviewer
@@ -137,15 +149,15 @@ const updateExistingParticipants = existing => R.cond ([
         pullRequestReviewStates.APPROVED,
       ])) ('state'),
     ]),
-    R.pipe (
+    event => R.pipe (
       R.prop ('authorOrActor'),
       x => R.findIndex (R.propEq ('login') (x)) (existing),
-      i => R.adjust (i) (R.assoc ('isResponsible') (false)) (existing),
+      i => R.adjust (i) (Utils.setParticipantIsNotResponsible (event)) (existing),
       _existing => R.pipe (
         R.findIndex (R.propEq ('role') (participantRoles.AUTHOR)),
-        i => R.adjust (i) (R.assoc ('isResponsible') (true)) (_existing),
+        i => R.adjust (i) (Utils.setParticipantIsResponsible (event)) (_existing),
       ) (_existing),
-    ),
+    ) (event),
   ],
   // ... default
   [R.T, R.always (existing)],

@@ -580,6 +580,7 @@ describe ('modules/PullRequestEvents/reducer', () => {
         // then ... should have set initial committer as responsible
         const participants = R.pluck ('participants') (chronologicalResult)
         const event1Participants = participants[0]
+        console.log(event1Participants)
         assert.equal (event1Participants.length, 1)
         assert.include (event1Participants[0], { login: 'USER 1 AUTHOR', isResponsible: true })
       })
