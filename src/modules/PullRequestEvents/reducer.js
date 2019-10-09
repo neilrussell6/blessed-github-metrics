@@ -192,7 +192,7 @@ const setPullRequestEvents = (state, { payload }) => R.pipe (
     type: x.__typename,
     state: x.state,
     eventLabel: R.prop (x.state ? `${x.__typename}__${x.state}` : x.__typename) (eventTypeToLabelMap),
-    at: R.compose (R.head, R.filter (R.complement (R.isNil)), R.values, R.pick (['pushedDate', 'createdAt', 'submittedAt'])) (x),
+    at: R.compose (R.head, R.filter (R.complement (R.isNil)), R.values, R.pick (['pushedDate', 'createdAt', 'submittedAt', 'committedDate'])) (x),
     authorOrActor: x.actor ? x.actor : x.author,
     targetUser: x.requestedReviewer ? x.requestedReviewer : (x.assignee ? x.assignee : R.pathOr (null) (['review', 'author', 'login']) (x)),
     delay: null,

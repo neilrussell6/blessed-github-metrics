@@ -160,37 +160,46 @@ describe ('modules/PullRequestEvents/reducer', () => {
       assert.equal (reviewRequestedEventResult.authorOrActor, reviewRequestedEvent.actor.login)
     })
 
-    it ('should set at date from first available out pushedDate, createdAt and submittedAt', async () => {
+    it ('should set at date from first available out pushedDate, createdAt, submittedAt and committedDate', async () => {
       // when
       // ... we update our state from a http response including:
       // ... an event with both pushed and committed dates
       // ... an event with a submitted at date but no others
       // ... an event with a created at date but no others
-      const pullRequestCommit = await factory.build ('GithubPullRequestEvent', {}, { type: eventTypes.PULL_REQUEST_COMMIT })
+      // ... an event with no pushed date, but a committed dates
+      const pullRequestCommit = await factory.build ('GithubPullRequestEvent', {
+        commit: { author: { user: { login: 'COMMIT 1 AUTHOR' } } },
+      }, { type: eventTypes.PULL_REQUEST_COMMIT })
       const pullRequestReview = await factory.build (
         'GithubPullRequestEvent',
         { state: pullRequestReviewStates.APPROVED },
         { type: eventTypes.PULL_REQUEST_REVIEW },
       )
       const reviewRequestedEvent = await factory.build ('GithubPullRequestEvent', {}, { type: eventTypes.REVIEW_REQUESTED_EVENT })
+      const pullRequestCommit2 = await factory.build ('GithubPullRequestEvent', {
+        commit: { pushedDate: null, author: { user: { login: 'COMMIT 2 AUTHOR' } } },
+      }, { type: eventTypes.PULL_REQUEST_COMMIT })
       const state = []
       const { repository } = await repositoryWithEventsFixture ([
         pullRequestCommit,
         pullRequestReview,
         reviewRequestedEvent,
+        pullRequestCommit2,
       ])
       const payload = { repository }
       const action = httpGetPullRequestEventsSuccess (payload)
       const result = SUT (state, action)
 
       // then ... should set at date correctly for all events
-      assert.equal (result.length, 3)
-      const pullRequestCommitResult = R.find (R.propEq ('eventLabel') ('COMMIT')) (result)
+      assert.equal (result.length, 4)
+      const pullRequestCommitResult = R.find (R.propEq ('authorOrActor') ('COMMIT 1 AUTHOR')) (result)
       assert.equal (pullRequestCommitResult.at, pullRequestCommit.commit.pushedDate)
       const pullRequestReviewResult = R.find (R.propEq ('eventLabel') ('REVIEW :: APPROVED')) (result)
       assert.equal (pullRequestReviewResult.at, pullRequestReview.submittedAt)
       const reviewRequestedEventResult = R.find (R.propEq ('eventLabel') ('REVIEW REQUESTED')) (result)
       assert.equal (reviewRequestedEventResult.at, reviewRequestedEvent.createdAt)
+      const pullRequestCommit2Result = R.find (R.propEq ('authorOrActor') ('COMMIT 2 AUTHOR')) (result)
+      assert.equal (pullRequestCommit2Result.at, pullRequestCommit.commit.committedDate)
     })
 
 
